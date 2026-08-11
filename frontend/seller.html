@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard - SriniMart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a href="seller.html" class="topbar-brand">SriniMart</a>
+            <div class="topbar-links">
+                <a href="seller.html" class="active">Dashboard</a>
+                <a href="buyer.html">View Storefront</a>
+                <a href="profile.html">Profile</a>
+            </div>
+            <div class="topbar-user">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-meta">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+                <button class="btn btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="page-header">
+            <div class="container">
+                <h1>Seller Dashboard</h1>
+                <p id="storeGreeting">Manage your products and orders.</p>
+            </div>
+        </div>
+
+        <div class="container mt-24">
+            <div class="stats-grid mb-24">
+                <div class="stat-card">
+                    <div class="stat-label">Total Products</div>
+                    <div class="stat-value" id="statProducts">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Products</div>
+                    <div class="stat-value" id="statActive">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Low Stock (&le; 5)</div>
+                    <div class="stat-value danger-text" id="statLowStock">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Orders</div>
+                    <div class="stat-value" id="statOrders">0</div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="products" onclick="showTab('products')">Products</button>
+                <button class="tab-btn" data-tab="orders" onclick="showTab('orders')">Orders</button>
+            </div>
+
+            <div id="tab-products" class="tab-panel active">
+                <div class="flex-between mb-16">
+                    <h2 class="section-title" style="margin:0">My Products</h2>
+                    <button class="btn btn-primary" onclick="openProductModal()">+ Add Product</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Approval</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-orders" class="tab-panel">
+                <h2 class="section-title">Orders for my products</h2>
+                <div id="sellerOrderList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product modal -->
+    <div class="modal-backdrop" id="productModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Product</h3>
+                <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            </div>
+            <form id="productForm">
+                <input type="hidden" id="pId">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="pName" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="pCategory" required></select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₹)</label>
+                        <input type="number" id="pPrice" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>MRP (₹) <span class="muted">(optional)</span></label>
+                        <input type="number" id="pMrp" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="number" id="pStock" min="0" step="1" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="pDescription" rows="3" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Product Images</label>
+                    <input type="file" id="pImages" accept="image/*" multiple>
+                    <div class="image-preview-grid mt-8" id="pImagePreviews"></div>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="pActive" checked> Active (visible to buyers)</label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    <script type="module" src="js/seller.js"></script>
+    <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>
