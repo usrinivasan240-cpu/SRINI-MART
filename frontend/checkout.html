@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - SriniMart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a href="buyer.html" class="topbar-brand">SriniMart</a>
+            <div class="topbar-links">
+                <a href="buyer.html">Browse</a>
+                <a href="cart.html">Cart</a>
+                <a href="orders.html">My Orders</a>
+                <a href="profile.html">Profile</a>
+            </div>
+            <div class="topbar-user">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-meta">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+                <button class="btn btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="page-header">
+            <div class="container">
+                <h1>Checkout</h1>
+                <p>Enter your shipping details and complete your order.</p>
+            </div>
+        </div>
+
+        <div class="container mt-24">
+            <div class="cart-layout">
+                <div class="card">
+                    <h3 style="margin-bottom:16px">Shipping Address</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="cName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="cPhone" placeholder="10-digit mobile number" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" id="cAddress" placeholder="House no, street, area" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="cCity" required>
+                        </div>
+                        <div class="form-group">
+                            <label>State</label>
+                            <input type="text" id="cState" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pincode</label>
+                            <input type="text" id="cPincode" required>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <h3 style="margin-bottom:16px">Payment Method</h3>
+                    <div class="form-group">
+                        <label><input type="radio" name="payment" value="cod" checked> Cash on Delivery</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="radio" name="payment" value="upi"> UPI (GPay / PhonePe / Paytm)</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="radio" name="payment" value="card"> Credit / Debit Card</label>
+                    </div>
+                    <p class="muted">Demo note: this checkout uses a mock payment processor. No real payment is made.</p>
+                </div>
+
+                <div class="card summary-card">
+                    <h3 style="margin-bottom:8px">Order Summary</h3>
+                    <div class="summary-row"><span>Items</span><span id="sumItems">0</span></div>
+                    <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal">₹0.00</span></div>
+                    <div class="summary-row"><span>Shipping</span><span id="sumShipping">₹0.00</span></div>
+                    <div class="summary-row"><span>Discount</span><span id="sumDiscount" class="success-text">−₹0.00</span></div>
+                    <div class="summary-row total"><span>Total</span><span id="sumTotal">₹0.00</span></div>
+                    <button class="btn btn-primary" id="placeOrderBtn">Place Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    <script type="module" src="js/checkout.js"></script>
+    <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>

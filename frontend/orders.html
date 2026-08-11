@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - SriniMart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a href="buyer.html" class="topbar-brand">SriniMart</a>
+            <div class="topbar-links">
+                <a href="buyer.html">Browse</a>
+                <a href="cart.html">Cart</a>
+                <a href="orders.html" class="active">My Orders</a>
+                <a href="profile.html">Profile</a>
+            </div>
+            <div class="topbar-user">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-meta">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+                <button class="btn btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="page-header">
+            <div class="container">
+                <h1>My Orders</h1>
+                <p>Track and manage your orders.</p>
+            </div>
+        </div>
+
+        <div class="container mt-24">
+            <div id="orderList"><div class="muted">Loading orders...</div></div>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    <script type="module" src="js/orders.js"></script>
+    <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>
