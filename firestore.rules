@@ -1,0 +1,93 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isOwnUser(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    // ---------- Users ----------
+    match /users/{uid} {
+      allow read: if isOwnUser(uid) || isAdmin();
+      allow create: if isOwnUser(uid);
+      allow update: if isOwnUser(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Categories ----------
+    match /categories/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // ---------- Products ----------
+    match /products/{id} {
+      allow read: if signedIn() && (
+        (resource.data.isApproved == true && resource.data.isActive == true)
+        || resource.data.sellerId == request.auth.uid
+        || isAdmin()
+      );
+      allow create: if signedIn() && request.resource.data.sellerId == request.auth.uid;
+      // Sellers may edit their own listings but can never change approval status.
+      allow update: if isAdmin()
+        || (signedIn()
+            && resource.data.sellerId == request.auth.uid
+            && request.resource.data.isApproved == resource.data.isApproved);
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Cart Items ----------
+    match /cartItems/{id} {
+      allow read, update, delete: if isOwnUser(resource.data.userId);
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    // ---------- Orders ----------
+    match /orders/{id} {
+      allow read: if isOwnUser(resource.data.userId) || isAdmin();
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      // Buyers may cancel their own orders; admins manage status.
+      allow update: if isAdmin()
+        || (isOwnUser(resource.data.userId)
+            && request.resource.data.orderStatus == 'cancelled');
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Reviews ----------
+    match /reviews/{id} {
+      allow read: if signedIn() && (
+        resource.data.status == 'approved'
+        || resource.data.userId == request.auth.uid
+        || isAdmin()
+      );
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------- Seller Order Mirrors ----------
+    // A read-only mirror of orders, per seller, created at checkout so sellers
+    // can see the orders for their products.
+    match /sellerOrders/{id} {
+      allow read: if signedIn() && resource.data.sellerId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.sellerId != null;
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------- Chatbot History ----------
+    match /chats/{uid} {
+      allow read, update: if isOwnUser(uid);
+      allow create: if isOwnUser(uid) && request.resource.data.messages is list;
+      allow delete: if isAdmin();
+    }
+  }
+}
