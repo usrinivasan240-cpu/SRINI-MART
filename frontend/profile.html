@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - SriniMart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a href="buyer.html" class="topbar-brand">SriniMart</a>
+            <div class="topbar-links">
+                <a href="buyer.html">Browse</a>
+                <a href="cart.html">Cart</a>
+                <a href="orders.html">My Orders</a>
+                <a href="profile.html" class="active">Profile</a>
+            </div>
+            <div class="topbar-user">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-meta">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+                <button class="btn btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="page-header">
+            <div class="container">
+                <h1>My Profile</h1>
+                <p>Manage your account and delivery information.</p>
+            </div>
+        </div>
+
+        <div class="container mt-24">
+            <div class="cart-layout">
+                <div class="card text-center">
+                    <div class="avatar-lg" style="margin:0 auto" id="profileAvatar"></div>
+                    <h2 class="mt-16" id="profileName" style="font-size:20px">—</h2>
+                    <p class="muted" id="profileEmail">—</p>
+                    <span class="pill blue" id="profileRole">—</span>
+                    <p class="muted mt-16" id="memberSince">—</p>
+                    <button class="btn btn-secondary mt-16" id="resetPwdBtn">Reset Password</button>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom:16px">Account Information</h3>
+                    <form id="profileForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" id="pFirstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" id="pLastName" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="pPhone" placeholder="10-digit mobile number">
+                        </div>
+                        <div class="form-group">
+                            <label>Default Address</label>
+                            <input type="text" id="pAddress" placeholder="House no, street, area">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" id="pCity">
+                            </div>
+                            <div class="form-group">
+                                <label>State</label>
+                                <input type="text" id="pState">
+                            </div>
+                            <div class="form-group">
+                                <label>Pincode</label>
+                                <input type="text" id="pPincode">
+                            </div>
+                        </div>
+
+                        <div id="sellerFields" style="display:none">
+                            <hr class="divider">
+                            <h3 style="margin-bottom:16px">Store Details (Sellers)</h3>
+                            <div class="form-group">
+                                <label>Store Name</label>
+                                <input type="text" id="pStoreName">
+                            </div>
+                            <div class="form-group">
+                                <label>Store Description</label>
+                                <textarea id="pStoreDesc" rows="3" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit"></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-16">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    <script type="module" src="js/profile.js"></script>
+    <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>

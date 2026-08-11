@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart - SriniMart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a href="buyer.html" class="topbar-brand">SriniMart</a>
+            <div class="topbar-links">
+                <a href="buyer.html">Browse</a>
+                <a href="cart.html" class="active">Cart <span id="cartCount">0</span></a>
+                <a href="orders.html">My Orders</a>
+                <a href="profile.html">Profile</a>
+            </div>
+            <div class="topbar-user">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-meta">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+                <button class="btn btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="page-header">
+            <div class="container">
+                <h1>My Cart</h1>
+                <p>Review your items before checking out.</p>
+            </div>
+        </div>
+
+        <div class="container mt-24">
+            <div class="cart-layout">
+                <div class="cart-items" id="cartItems"></div>
+                <div class="card summary-card" id="summaryCard" style="display:none">
+                    <h3 style="margin-bottom:8px">Order Summary</h3>
+                    <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal">₹0.00</span></div>
+                    <div class="summary-row"><span>Shipping</span><span id="sumShipping">₹0.00</span></div>
+                    <div class="summary-row"><span>Discount</span><span id="sumDiscount" class="success-text">−₹0.00</span></div>
+                    <div class="summary-row total"><span>Total</span><span id="sumTotal">₹0.00</span></div>
+                    <button class="btn btn-primary" id="checkoutBtn">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    <script type="module" src="js/cart.js"></script>
+    <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>

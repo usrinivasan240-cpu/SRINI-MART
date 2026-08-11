@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product - SriniMart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a href="buyer.html" class="topbar-brand">SriniMart</a>
+            <div class="topbar-links">
+                <a href="buyer.html">Browse</a>
+                <a href="cart.html">Cart <span id="cartCount">0</span></a>
+                <a href="orders.html">My Orders</a>
+                <a href="profile.html">Profile</a>
+            </div>
+            <div class="topbar-user">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-meta">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+                <button class="btn btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="container mt-24">
+            <div id="productArea"><div class="skeleton-card" style="height:400px"></div></div>
+
+            <hr class="divider">
+
+            <!-- Reviews -->
+            <div class="flex-between mb-16">
+                <h2 class="section-title" style="margin:0">Customer Reviews</h2>
+                <span id="ratingSummary" class="muted"></span>
+            </div>
+            <div id="reviewFormWrap"></div>
+            <div class="review-list" id="reviewList"></div>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    <script type="module" src="js/product.js"></script>
+    <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>
