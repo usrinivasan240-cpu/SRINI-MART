@@ -80,49 +80,9 @@
 
     <!-- Firebase SDKs -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
-                 signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDs1gPFDgOocUDQJe24RB4bPdDaqelAlX4",
-            authDomain: "srini-mart.firebaseapp.com",
-            projectId: "srini-mart",
-            storageBucket: "srini-mart.firebasestorage.app",
-            messagingSenderId: "1015544028033",
-            appId: "1:1015544028033:web:c9bcd10c8813806bbf6680",
-            measurementId: "G-QF0R9HCFCW"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Toast notification
-        function showToast(message, type = 'info') {
-            const container = document.querySelector('.toast-container') || (() => {
-                const c = document.createElement('div');
-                c.className = 'toast-container';
-                document.body.appendChild(c);
-                return c;
-            })();
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-        }
-
-        // Show/hide loading
-        function showLoading(btn) {
-            btn.disabled = true;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="spinner"></span> Loading...';
-            return () => { btn.disabled = false; btn.innerHTML = originalText; };
-        }
+        import { auth, db, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+                 updateProfile, collection, getDocs, doc, setDoc, getDoc, onAuthStateChanged } from "./js/firebase.js";
+        import { toast, setLoading } from "./js/ui.js";
 
         // Tab switching
         window.showTab = function(tab) {
@@ -150,7 +110,7 @@
         window.handleLogin = async function(e) {
             e.preventDefault();
             const btn = document.getElementById('loginBtn');
-            const hideLoading = showLoading(btn);
+            setLoading(btn, true);
 
             try {
                 const email = document.getElementById('loginEmail').value;
@@ -174,7 +134,7 @@
                 localStorage.setItem('srinimart_token', idToken);
                 localStorage.setItem('srinimart_user', JSON.stringify(userData));
 
-                showToast('Login successful!', 'success');
+                toast('Login successful!', 'success');
 
                 // Redirect based on role
                 setTimeout(() => {
@@ -190,9 +150,9 @@
                 else if (error.code === 'auth/invalid-email') message = 'Invalid email address';
                 else if (error.code === 'auth/too-many-requests') message = 'Too many attempts. Try again later';
                 else message = error.message;
-                showToast(message, 'error');
+                toast(message, 'error');
             } finally {
-                hideLoading();
+                setLoading(btn, false);
             }
         };
 
@@ -200,7 +160,7 @@
         window.handleRegister = async function(e) {
             e.preventDefault();
             const btn = document.getElementById('registerBtn');
-            const hideLoading = showLoading(btn);
+            setLoading(btn, true);
 
             try {
                 const firstName = document.getElementById('regFirstName').value;
@@ -208,6 +168,13 @@
                 const email = document.getElementById('regEmail').value;
                 const password = document.getElementById('regPassword').value;
                 const role = document.getElementById('regRole').value;
+
+                // Bootstrap: the very first account ever created becomes Admin.
+                let finalRole = role;
+                if (role !== 'admin') {
+                    const existingUsers = await getDocs(collection(db, 'users'));
+                    if (existingUsers.empty) finalRole = 'admin';
+                }
 
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
@@ -221,7 +188,7 @@
                     email: email,
                     firstName: firstName,
                     lastName: lastName,
-                    role: role,
+                    role: finalRole,
                     isActive: true,
                     isVerified: false,
                     createdAt: new Date().toISOString(),
@@ -238,14 +205,15 @@
                     email: email,
                     firstName: firstName,
                     lastName: lastName,
-                    role: role
+                    role: finalRole
                 }));
 
-                showToast('Account created successfully!', 'success');
+                toast(finalRole === 'admin' ? 'Admin account created!' : 'Account created successfully!', 'success');
 
                 // Redirect based on role
                 setTimeout(() => {
-                    if (role === 'seller') window.location.href = 'seller.html';
+                    if (finalRole === 'admin') window.location.href = 'admin.html';
+                    else if (finalRole === 'seller') window.location.href = 'seller.html';
                     else window.location.href = 'buyer.html';
                 }, 500);
 
@@ -255,14 +223,14 @@
                 else if (error.code === 'auth/weak-password') message = 'Password must be at least 6 characters';
                 else if (error.code === 'auth/invalid-email') message = 'Invalid email address';
                 else message = error.message;
-                showToast(message, 'error');
+                toast(message, 'error');
             } finally {
-                hideLoading();
+                setLoading(btn, false);
             }
         };
 
         // Check if already logged in
-        auth.onAuthStateChanged((user) => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
                 getDoc(doc(db, "users", user.uid)).then(docSnap => {
                     let userData = { uid: user.uid, email: user.email, role: 'buyer' };
