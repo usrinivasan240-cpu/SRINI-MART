@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SriniMart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a href="admin.html" class="topbar-brand">SriniMart Admin</a>
+            <div class="topbar-links">
+                <a href="admin.html" class="active">Dashboard</a>
+                <a href="buyer.html">View Storefront</a>
+            </div>
+            <div class="topbar-user">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-meta">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+                <button class="btn btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="page-header">
+            <div class="container">
+                <h1>Admin Dashboard</h1>
+                <p>Manage users, products, orders, and reviews.</p>
+            </div>
+        </div>
+
+        <div class="container mt-24">
+            <div class="stats-grid mb-24" id="statsGrid">
+                <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value" id="stUsers">—</div></div>
+                <div class="stat-card"><div class="stat-label">Buyers</div><div class="stat-value" id="stBuyers">—</div></div>
+                <div class="stat-card"><div class="stat-label">Sellers</div><div class="stat-value" id="stSellers">—</div></div>
+                <div class="stat-card"><div class="stat-label">Products</div><div class="stat-value" id="stProducts">—</div></div>
+                <div class="stat-card"><div class="stat-label">Pending Approval</div><div class="stat-value" id="stPending">—</div></div>
+                <div class="stat-card"><div class="stat-label">Orders</div><div class="stat-value" id="stOrders">—</div></div>
+                <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value" id="stRevenue">—</div></div>
+                <div class="stat-card"><div class="stat-label">Pending Reviews</div><div class="stat-value" id="stReviews">—</div></div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="users" onclick="showTab('users')">Users</button>
+                <button class="tab-btn" data-tab="products" onclick="showTab('products')">Products</button>
+                <button class="tab-btn" data-tab="orders" onclick="showTab('orders')">Orders</button>
+                <button class="tab-btn" data-tab="reviews" onclick="showTab('reviews')">Reviews</button>
+                <button class="tab-btn" data-tab="seed" onclick="showTab('seed')">Demo Data</button>
+            </div>
+
+            <!-- Users -->
+            <div id="tab-users" class="tab-panel active">
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="usersBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Products -->
+            <div id="tab-products" class="tab-panel">
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Image</th><th>Name</th><th>Seller</th><th>Price</th><th>Stock</th><th>Approval</th><th>Active</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="productsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Orders -->
+            <div id="tab-orders" class="tab-panel">
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Order</th><th>Buyer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="ordersBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reviews -->
+            <div id="tab-reviews" class="tab-panel">
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Product</th><th>Reviewer</th><th>Rating</th><th>Comment</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="reviewsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Seed -->
+            <div id="tab-seed" class="tab-panel">
+                <div class="card">
+                    <h3 style="margin-bottom:8px">Seed Demo Data</h3>
+                    <p class="muted mb-16">Creates starter categories and sample products so the storefront isn't empty. Existing categories are preserved; products are only added if none exist.</p>
+                    <button class="btn btn-primary" id="seedBtn">Seed Demo Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    <script type="module" src="js/admin.js"></script>
+    <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>
