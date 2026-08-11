@@ -6,6 +6,8 @@
 
 SriniMart is a multi-seller marketplace platform where buyers can shop, sellers can list products, and admins moderate the platform. The app is a **client-side Firebase application** (Authentication + Firestore + Storage) — no custom backend required.
 
+> 📖 **New to the codebase?** Read [`docs/PROJECT_GUIDE.md`](docs/PROJECT_GUIDE.md) — it explains every file and module in plain, non-programmer-friendly language.
+
 > Note: the repository also contains an early plan for an enterprise C++ (Drogon + PostgreSQL) backend (`CMakeLists.txt`, `vcpkg.json`). That backend is **not part of the working application**; the live app runs entirely on Firebase from `frontend/`.
 
 ## Features
@@ -93,6 +95,8 @@ SriniMart/
 ├── firestore.indexes.json  # Required composite indexes
 ├── storage.rules           # Storage security rules
 ├── firebase.json           # Firebase deploy config
+├── docs/
+│   └── PROJECT_GUIDE.md    # Every file & module explained (beginner friendly)
 ├── DEPLOYMENT.md           # Deployment & CI/CD guide
 ├── PHASES.md               # Project roadmap
 ├── CHANGELOG.md
