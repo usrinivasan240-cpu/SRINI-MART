@@ -1,0 +1,11 @@
+{
+  "name": "srinimart-frontend",
+  "version": "1.2.0",
+  "description": "SriniMart Firebase marketplace frontend",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.cjs",
+    "test": "node --test test/core.test.mjs"
+  }
+}
