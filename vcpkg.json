@@ -1,0 +1,15 @@
+{
+  "name": "srinimart",
+  "version-string": "1.0.0",
+  "description": "Enterprise Multi-Seller Marketplace Backend",
+  "license": "MIT",
+  "dependencies": [
+    "drogon",
+    "libpqxx",
+    "json",
+    "gtest",
+    "spdlog",
+    "libsodium",
+    "httplib"
+  ]
+}

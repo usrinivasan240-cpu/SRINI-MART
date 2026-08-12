@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SriniMart - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <a href="index.html" class="nav-logo">SriniMart</a>
+                <p>Enterprise Multi-Seller Marketplace</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showTab('login')">Login</button>
+                <button class="auth-tab" onclick="showTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="you@example.com" required>
+                    <span class="error-text">Please enter a valid email</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required minlength="8">
+                    <span class="error-text">Password must be at least 8 characters</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" style="display:none" onsubmit="handleRegister(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regFirstName">First Name</label>
+                        <input type="text" id="regFirstName" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regLastName">Last Name</label>
+                        <input type="text" id="regLastName" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" placeholder="Min 8 characters" required minlength="8">
+                </div>
+
+                <div class="form-group">
+                    <label for="regRole">Account Type</label>
+                    <select id="regRole" required>
+                        <option value="buyer">Buyer - Shop on the marketplace</option>
+                        <option value="seller">Seller - Sell your products</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="registerBtn">Create Account</button>
+            </form>
+
+            <div class="auth-footer">
+                <p id="authFooterText">Don't have an account? <a href="#" onclick="showTab('register')">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+                 signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDs1gPFDgOocUDQJe24RB4bPdDaqelAlX4",
+            authDomain: "srini-mart.firebaseapp.com",
+            projectId: "srini-mart",
+            storageBucket: "srini-mart.firebasestorage.app",
+            messagingSenderId: "1015544028033",
+            appId: "1:1015544028033:web:c9bcd10c8813806bbf6680",
+            measurementId: "G-QF0R9HCFCW"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const container = document.querySelector('.toast-container') || (() => {
+                const c = document.createElement('div');
+                c.className = 'toast-container';
+                document.body.appendChild(c);
+                return c;
+            })();
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // Show/hide loading
+        function showLoading(btn) {
+            btn.disabled = true;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Loading...';
+            return () => { btn.disabled = false; btn.innerHTML = originalText; };
+        }
+
+        // Tab switching
+        window.showTab = function(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabs = document.querySelectorAll('.auth-tab');
+            const footerText = document.getElementById('authFooterText');
+
+            tabs.forEach(t => t.classList.remove('active'));
+
+            if (tab === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                tabs[0].classList.add('active');
+                footerText.innerHTML = 'Don\'t have an account? <a href="#" onclick="showTab(\'register\')">Sign up</a>';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                tabs[1].classList.add('active');
+                footerText.innerHTML = 'Already have an account? <a href="#" onclick="showTab(\'login\')">Sign in</a>';
+            }
+        };
+
+        // Login handler
+        window.handleLogin = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const hideLoading = showLoading(btn);
+
+            try {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Get user data from Firestore
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                let userData = { uid: user.uid, email: user.email, role: 'buyer' };
+
+                if (userDoc.exists()) {
+                    userData = { ...userData, ...userDoc.data() };
+                }
+
+                // Get ID token
+                const idToken = await user.getIdToken();
+
+                // Store in localStorage
+                localStorage.setItem('srinimart_token', idToken);
+                localStorage.setItem('srinimart_user', JSON.stringify(userData));
+
+                showToast('Login successful!', 'success');
+
+                // Redirect based on role
+                setTimeout(() => {
+                    if (userData.role === 'admin') window.location.href = 'admin.html';
+                    else if (userData.role === 'seller') window.location.href = 'seller.html';
+                    else window.location.href = 'buyer.html';
+                }, 500);
+
+            } catch (error) {
+                let message = 'Login failed';
+                if (error.code === 'auth/user-not-found') message = 'No account found with this email';
+                else if (error.code === 'auth/wrong-password') message = 'Incorrect password';
+                else if (error.code === 'auth/invalid-email') message = 'Invalid email address';
+                else if (error.code === 'auth/too-many-requests') message = 'Too many attempts. Try again later';
+                else message = error.message;
+                showToast(message, 'error');
+            } finally {
+                hideLoading();
+            }
+        };
+
+        // Register handler
+        window.handleRegister = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('registerBtn');
+            const hideLoading = showLoading(btn);
+
+            try {
+                const firstName = document.getElementById('regFirstName').value;
+                const lastName = document.getElementById('regLastName').value;
+                const email = document.getElementById('regEmail').value;
+                const password = document.getElementById('regPassword').value;
+                const role = document.getElementById('regRole').value;
+
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Update display name
+                await updateProfile(user, { displayName: `${firstName} ${lastName}` });
+
+                // Save user data to Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    role: role,
+                    isActive: true,
+                    isVerified: false,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                });
+
+                // Get ID token
+                const idToken = await user.getIdToken();
+
+                // Store in localStorage
+                localStorage.setItem('srinimart_token', idToken);
+                localStorage.setItem('srinimart_user', JSON.stringify({
+                    uid: user.uid,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    role: role
+                }));
+
+                showToast('Account created successfully!', 'success');
+
+                // Redirect based on role
+                setTimeout(() => {
+                    if (role === 'seller') window.location.href = 'seller.html';
+                    else window.location.href = 'buyer.html';
+                }, 500);
+
+            } catch (error) {
+                let message = 'Registration failed';
+                if (error.code === 'auth/email-already-in-use') message = 'An account with this email already exists';
+                else if (error.code === 'auth/weak-password') message = 'Password must be at least 6 characters';
+                else if (error.code === 'auth/invalid-email') message = 'Invalid email address';
+                else message = error.message;
+                showToast(message, 'error');
+            } finally {
+                hideLoading();
+            }
+        };
+
+        // Check if already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                getDoc(doc(db, "users", user.uid)).then(docSnap => {
+                    let userData = { uid: user.uid, email: user.email, role: 'buyer' };
+                    if (docSnap.exists()) userData = { ...userData, ...docSnap.data() };
+                    localStorage.setItem('srinimart_user', JSON.stringify(userData));
+                    if (userData.role === 'admin') window.location.href = 'admin.html';
+                    else if (userData.role === 'seller') window.location.href = 'seller.html';
+                    else window.location.href = 'buyer.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
