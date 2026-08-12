@@ -3,6 +3,13 @@
 // Module:      Phase 4 - Checkout & Orders
 // Purpose:     Validate address, mock payment, create order, decrement stock,
 //              and clear cart.
+//
+// ⭐ WHAT THIS FILE IS (plain English):
+//   The brain of checkout.html — the last step before buying. It double-checks
+//   the cart and the delivery address, runs a pretend payment (this demo has
+//   no real money gateway), then saves the order. EVERYTHING is written at
+//   once using a "batch" so the order, stock, and cart update either all
+//   succeed together or not at all (no half-orders).
 // Language:    JavaScript (ES Module)
 // ============================================================================
 
@@ -12,13 +19,16 @@ import {
 } from "./firebase.js";
 import { toast, requireAuth, logout, formatMoney, validatePhone, validatePincode } from "./ui.js";
 
+// --- Page state -----------------------------------------------------------------
 let session = null;
 let cart = [];
 let totals = { subtotal: 0, shipping: 0, discount: 0, total: 0 };
 
+// Same shipping rule as the cart page: FREE over ₹500, otherwise ₹40.
 const FREE_SHIPPING_THRESHOLD = 500;
 const SHIPPING_FEE = 40;
 
+// loadCart: downloads the user's cart; if it's empty, send them shopping.
 async function loadCart() {
     const snap = await getDocs(query(collection(db, 'cartItems'), where('userId', '==', session.user.uid)));
     cart = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -31,6 +41,7 @@ async function loadCart() {
     prefillAddress();
 }
 
+// computeTotals: same math as the cart page (subtotal, discount, shipping).
 function computeTotals() {
     let subtotal = 0, mrpTotal = 0;
     for (const item of cart) {
@@ -42,6 +53,7 @@ function computeTotals() {
     return { subtotal, discount, shipping, total: subtotal + shipping };
 }
 
+// renderSummary: fills the order summary numbers on the right side.
 function renderSummary() {
     totals = computeTotals();
     document.getElementById('sumItems').textContent = cart.reduce((s, i) => s + i.quantity, 0);
@@ -51,6 +63,8 @@ function renderSummary() {
     document.getElementById('sumTotal').textContent = formatMoney(totals.total);
 }
 
+// prefillAddress: if the user's profile already has a saved address, copy it
+// into the form so they don't retype everything.
 function prefillAddress() {
     const p = session.profile || {};
     if (p.address) {
@@ -63,6 +77,8 @@ function prefillAddress() {
     }
 }
 
+// validateForm: every field must be filled, the phone must be a valid 10-digit
+// Indian mobile, and the pincode must be 6 digits.
 function validateForm() {
     const fields = ['cName', 'cPhone', 'cAddress', 'cCity', 'cState', 'cPincode'];
     for (const id of fields) {
@@ -87,6 +103,8 @@ function validateForm() {
 }
 
 // Mock payment processor.
+// There is no real bank here — this just waits ~1 second and "approves" the
+// payment (and, very rarely, fails) to simulate what a real gateway feels like.
 function processMockPayment(method) {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -96,6 +114,12 @@ function processMockPayment(method) {
     });
 }
 
+// placeOrder: THE BIG STEP. Called when the customer clicks "Place Order".
+// 1. Re-check every item's stock against the live database.
+// 2. Run the (mock) payment.
+// 3. Create the order record.
+// 4. Mirror a copy of the order for each seller involved.
+// 5. In one atomic batch: lower stock, delete cart lines, commit.
 async function placeOrder() {
     if (!validateForm()) return;
     const btn = document.getElementById('placeOrderBtn');
@@ -103,7 +127,7 @@ async function placeOrder() {
     btn.innerHTML = '<span class="spinner"></span> Processing...';
 
     try {
-        // Re-check stock for all items.
+        // Step 1 — re-check stock for ALL items before charging anything.
         const batch = writeBatch(db);
         const orderItems = [];
         for (const item of cart) {
@@ -123,7 +147,7 @@ async function placeOrder() {
             });
         }
 
-        // Mock payment.
+        // Step 2 — run the mock payment.
         const payment = await processMockPayment(
             document.querySelector('input[name="payment"]:checked').value
         );
@@ -137,6 +161,7 @@ async function placeOrder() {
             pincode: document.getElementById('cPincode').value.trim()
         };
 
+        // Step 3 — create the main order record (the buyer's copy).
         const orderRef = await addDoc(collection(db, 'orders'), {
             userId: session.user.uid,
             userName: `${session.profile.firstName || ''} ${session.profile.lastName || ''}`.trim() || session.profile.email,
@@ -154,7 +179,8 @@ async function placeOrder() {
             updatedAt: serverTimestamp()
         });
 
-        // Mirror the order per seller so sellers can view their orders.
+        // Step 4 — mirror the order per seller (sellerOrders) so each seller
+        // only sees their own slice of the order on their dashboard.
         const buyerName = `${session.profile.firstName || ''} ${session.profile.lastName || ''}`.trim() || session.profile.email;
         const sellers = {};
         for (const item of orderItems) {
@@ -180,7 +206,8 @@ async function placeOrder() {
             });
         }
 
-        // Decrement stock and clear cart.
+        // Step 5 — lower the product stock and empty the cart, all in ONE
+        // batch so everything commits (or nothing does).
         for (const item of cart) {
             batch.update(doc(db, 'products', item.productId), {
                 stock: increment(-item.quantity)
@@ -198,6 +225,7 @@ async function placeOrder() {
     }
 }
 
+// --- Init ------------------------------------------------------------------------
 async function init() {
     session = await requireAuth();
     if (!session) return;
@@ -210,4 +238,5 @@ async function init() {
     await loadCart();
 }
 
+// Start the page brain.
 init();

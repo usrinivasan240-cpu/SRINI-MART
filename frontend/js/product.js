@@ -3,6 +3,12 @@
 // Module:      Phase 2/5 - Product Detail & Reviews
 // Purpose:     Product detail view, quantity-based add to cart / buy now,
 //              and review submission with star ratings.
+//
+// ⭐ WHAT THIS FILE IS (plain English):
+//   The brain of product.html — the single-product page. It reads the
+//   product id from the web address (?id=...), shows the full details,
+//   lets the customer pick a quantity and add to cart or buy now, shows
+//   the approved reviews, and lets the customer write their own review.
 // Language:    JavaScript (ES Module)
 // ============================================================================
 
@@ -12,11 +18,14 @@ import {
 } from "./firebase.js";
 import { toast, requireAuth, logout, formatMoney, formatDate, escapeHtml, stars, emptyState } from "./ui.js";
 
-let session = null;
-let product = null;
+// --- Page state -----------------------------------------------------------------
+let session = null;     // the signed-in user
+let product = null;     // the product currently being viewed
 const params = new URLSearchParams(window.location.search);
-const productId = params.get('id');
+const productId = params.get('id');   // which product? taken from the URL
 
+// loadProduct: downloads the one product from the database and kicks off the
+// reviews + related-products sections.
 async function loadProduct() {
     const area = document.getElementById('productArea');
     if (!productId) {
@@ -38,6 +47,8 @@ async function loadProduct() {
     }
 }
 
+// renderProduct: draws the product page — photo, seller, name, rating, price,
+// discount, stock, description, quantity picker, and the two action buttons.
 function renderProduct() {
     const p = product;
     const discount = (p.mrp && p.mrp > p.price) ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0;
@@ -81,6 +92,7 @@ function renderProduct() {
             </div>
         </div>`;
 
+    // Keep the quantity box between 1 and the available stock.
     document.getElementById('qtyInput').addEventListener('change', () => {
         const el = document.getElementById('qtyInput');
         const val = Math.max(1, Math.min(parseInt(el.value) || 1, p.stock || 1));
@@ -89,11 +101,13 @@ function renderProduct() {
     document.getElementById('addToCartBtn').addEventListener('click', () => {
         addToCart(parseInt(document.getElementById('qtyInput').value) || 1);
     });
+    // "Buy Now" = add to cart, then jump straight to checkout.
     document.getElementById('buyNowBtn').addEventListener('click', async () => {
         await addToCart(parseInt(document.getElementById('qtyInput').value) || 1, true);
     });
 }
 
+// changeQty: the + / − buttons around the quantity box.
 window.changeQty = function(delta) {
     const el = document.getElementById('qtyInput');
     if (!el) return;
@@ -101,6 +115,8 @@ window.changeQty = function(delta) {
     el.value = Math.max(1, Math.min((parseInt(el.value) || 1) + delta, max));
 };
 
+// addToCart: same idea as buyer.js — save one cart line per user+product.
+// buyNow=true redirects to checkout afterwards.
 async function addToCart(qty, buyNow = false) {
     if (!session) { window.location.href = 'login.html'; return; }
     try {
@@ -128,6 +144,7 @@ async function addToCart(qty, buyNow = false) {
     }
 }
 
+// updateCartCount: shows how many cart lines this user has on the cart icon.
 async function updateCartCount() {
     if (!session) return;
     const snap = await getDocs(query(collection(db, 'cartItems'), where('userId', '==', session.user.uid)));
@@ -136,7 +153,11 @@ async function updateCartCount() {
 }
 
 // --- Reviews -------------------------------------------------------------------
+// Reviews are moderated: a customer writes one, an admin approves it, and only
+// then does it appear here. We also check whether the reviewer actually bought
+// the product to show a "Verified Purchase" badge.
 
+// hasPurchased: searches the customer's order history for this product.
 async function hasPurchased(userId, productId) {
     try {
         const snap = await getDocs(query(
@@ -151,6 +172,7 @@ async function hasPurchased(userId, productId) {
     } catch (e) { return false; }
 }
 
+// loadReviews: downloads and draws the approved reviews for this product.
 async function loadReviews() {
     const list = document.getElementById('reviewList');
     list.innerHTML = '<div class="muted">Loading reviews...</div>';
@@ -187,6 +209,8 @@ async function loadReviews() {
     renderReviewForm();
 }
 
+// renderReviewForm: shows the "Write a Review" box — but only for signed-in
+// buyers who aren't the seller of this product.
 function renderReviewForm() {
     const wrap = document.getElementById('reviewFormWrap');
     if (!session) {
@@ -221,13 +245,18 @@ function renderReviewForm() {
     document.getElementById('submitReviewBtn').addEventListener('click', submitReview);
 }
 
+// submitReview: saves the review with status "pending" (admin approves it),
+// checks for a verified purchase, prevents duplicate reviews, and updates the
+// product's average rating.
 async function submitReview() {
     const rating = parseInt(document.querySelector('input[name="rating"]:checked')?.value || 0);
     const comment = document.getElementById('reviewComment').value.trim();
     if (!rating) { toast('Please select a star rating', 'error'); return; }
 
     try {
+        // Has this buyer actually bought the product?
         const verified = await hasPurchased(session.user.uid, productId);
+        // One review per product per user.
         const existing = await getDocs(query(
             collection(db, 'reviews'),
             where('productId', '==', productId),
@@ -235,6 +264,7 @@ async function submitReview() {
         ));
         if (!existing.empty) throw new Error('You have already reviewed this product');
 
+        // Save the review (hidden until the admin says OK).
         await addDoc(collection(db, 'reviews'), {
             productId,
             userId: session.user.uid,
@@ -247,7 +277,7 @@ async function submitReview() {
             updatedAt: serverTimestamp()
         });
 
-        // Update aggregated rating on the product.
+        // Update the product's running average rating immediately.
         const newCount = (product.ratingCount || 0) + 1;
         const newRating = ((product.rating || 0) * (product.ratingCount || 0) + rating) / newCount;
         await setDoc(doc(db, 'products', productId), {
@@ -265,6 +295,8 @@ async function submitReview() {
 }
 
 // --- Related products ------------------------------------------------------------
+// Shows up to 4 more approved products from the same category, then deletes
+// the whole section if there are none.
 
 async function loadRelated() {
     const grid = document.createElement('div');
@@ -316,7 +348,7 @@ async function loadRelated() {
 }
 
 // --- Init ------------------------------------------------------------------------
-
+// Check login, fill the navbar, then load the product.
 async function init() {
     session = await requireAuth();
     document.getElementById('logoutBtn').addEventListener('click', logout);
@@ -330,4 +362,5 @@ async function init() {
     await loadProduct();
 }
 
+// Start the page brain.
 init();

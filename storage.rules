@@ -1,12 +1,25 @@
 rules_version = '2';
+// ============================================================================
+// File:    storage.rules
+// Purpose: Firebase security rules for uploaded files (product photos).
+// ⭐ WHAT THIS FILE IS (plain English):
+//     The security guard for the file storage (product images). Anyone logged
+//     in may view the images. A seller may upload only into their OWN product
+//     folder, only small files (< 5 MB), and only images (not scripts). The
+//     last rule closes the door for everything else, so nothing can sneak in
+//     outside the product folders.
+// Deployed with: firebase deploy --only storage
+// ============================================================================
 
 service firebase.storage {
   match /b/{bucket}/o {
 
+    // Helper: is the visitor logged in at all?
     function signedIn() {
       return request.auth != null;
     }
 
+    // Helper: is the logged-in user an admin? (Asked against the database.)
     function isAdmin() {
       return signedIn() &&
         firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
@@ -23,6 +36,7 @@ service firebase.storage {
       allow delete: if isAdmin();
     }
 
+    // Catch-all: anywhere else in storage is off-limits to everyone.
     match /{allPaths=**} {
       allow read, write: if false;
     }

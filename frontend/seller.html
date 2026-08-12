@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<!-- ============================================================================
+  File:    seller.html
+  Purpose: The seller dashboard — manage products, upload photos, view orders.
+  ⭐ WHAT THIS PAGE IS (plain English):
+     A private page only for accounts with the "seller" role (js/seller.js
+     enforces this). It shows inventory stats, a table of the seller's own
+     products (add / edit / activate / delete via the modal form), and a list
+     of orders that contain their products. New products are marked "Pending"
+     until an admin approves them. Photos are uploaded to Firebase Storage.
+  Used by: sellers.
+============================================================================= -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +19,7 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+    <!-- Seller top navigation (Dashboard / Storefront / Profile). -->
     <nav class="topbar">
         <div class="topbar-inner">
             <a href="seller.html" class="topbar-brand">SriniMart</a>
@@ -36,6 +48,7 @@
         </div>
 
         <div class="container mt-24">
+            <!-- Quick stat cards filled in by js/seller.js. -->
             <div class="stats-grid mb-24">
                 <div class="stat-card">
                     <div class="stat-label">Total Products</div>
@@ -55,11 +68,13 @@
                 </div>
             </div>
 
+            <!-- Products / Orders tabs. -->
             <div class="tabs">
                 <button class="tab-btn active" data-tab="products" onclick="showTab('products')">Products</button>
                 <button class="tab-btn" data-tab="orders" onclick="showTab('orders')">Orders</button>
             </div>
 
+            <!-- Products tab: table of this seller's products. -->
             <div id="tab-products" class="tab-panel active">
                 <div class="flex-between mb-16">
                     <h2 class="section-title" style="margin:0">My Products</h2>
@@ -84,6 +99,7 @@
                 </div>
             </div>
 
+            <!-- Orders tab: orders that include this seller's products. -->
             <div id="tab-orders" class="tab-panel">
                 <h2 class="section-title">Orders for my products</h2>
                 <div id="sellerOrderList"></div>
@@ -92,6 +108,8 @@
     </div>
 
     <!-- Product modal -->
+    <!-- The pop-up form for adding/editing a product: name, category, price,
+         MRP, stock, description, photo upload, and an "active" checkbox. -->
     <div class="modal-backdrop" id="productModal">
         <div class="modal">
             <div class="modal-header">
@@ -144,6 +162,7 @@
 
     <div class="toast-container"></div>
 
+    <!-- The page brain + the floating chat assistant. -->
     <script type="module" src="js/seller.js"></script>
     <script type="module" src="js/chatbot.js"></script>
 </body>

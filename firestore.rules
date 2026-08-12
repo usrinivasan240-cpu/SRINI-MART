@@ -1,22 +1,39 @@
 rules_version = '2';
+// ============================================================================
+// File:    firestore.rules
+// Purpose: Firebase security rules for the database.
+// ⭐ WHAT THIS FILE IS (plain English):
+//     The security guard for the database. Every read/write from a browser
+//     goes through these rules, which answer "is this person allowed to do
+//     this?". The rules use a few shared helper functions (signed in? admin?
+//     is this their own record?) and then apply them per collection: who may
+//     read users, who may create products, who may update an order, etc.
+//     Any action that does not match an "allow" line is denied by default.
+// Deployed with: firebase deploy --only firestore
+// ============================================================================
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Helper: is the visitor logged in at all?
     function signedIn() {
       return request.auth != null;
     }
 
+    // Helper: is the logged-in user an admin? (Looks up their role record.)
     function isAdmin() {
       return signedIn() &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
+    // Helper: is the visitor the owner of this user record?
     function isOwnUser(userId) {
       return signedIn() && request.auth.uid == userId;
     }
 
     // ---------- Users ----------
+    // A person can read/update their own profile; admins can read all and
+    // manage everyone (roles, activation). Only an admin may delete.
     match /users/{uid} {
       allow read: if isOwnUser(uid) || isAdmin();
       allow create: if isOwnUser(uid);
@@ -25,12 +42,16 @@ service cloud.firestore {
     }
 
     // ---------- Categories ----------
+    // Any logged-in user can view categories; only admins can change them.
     match /categories/{id} {
       allow read: if signedIn();
       allow write: if isAdmin();
     }
 
     // ---------- Products ----------
+    // Buyers may read a product only if it is both approved AND active (or if
+    // they are its seller / an admin). Sellers can create their own listings
+    // and edit them, but can never flip the "approved" switch themselves.
     match /products/{id} {
       allow read: if signedIn() && (
         (resource.data.isApproved == true && resource.data.isActive == true)
@@ -47,12 +68,14 @@ service cloud.firestore {
     }
 
     // ---------- Cart Items ----------
+    // A cart item may only be touched by the person who owns it.
     match /cartItems/{id} {
       allow read, update, delete: if isOwnUser(resource.data.userId);
       allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
     }
 
     // ---------- Orders ----------
+    // Buyers can read/cancel their own orders; admins can do anything.
     match /orders/{id} {
       allow read: if isOwnUser(resource.data.userId) || isAdmin();
       allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
@@ -64,6 +87,8 @@ service cloud.firestore {
     }
 
     // ---------- Reviews ----------
+    // Everyone can read approved reviews; the author can see their own while
+    // it is still pending; only admins can approve/reject or delete.
     match /reviews/{id} {
       allow read: if signedIn() && (
         resource.data.status == 'approved'
@@ -84,6 +109,7 @@ service cloud.firestore {
     }
 
     // ---------- Chatbot History ----------
+    // Each user's chat history is private to them; only admins may delete it.
     match /chats/{uid} {
       allow read, update: if isOwnUser(uid);
       allow create: if isOwnUser(uid) && request.resource.data.messages is list;

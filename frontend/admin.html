@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<!-- ============================================================================
+  File:    admin.html
+  Purpose: The admin control room — users, products, orders, reviews, demo data.
+  ⭐ WHAT THIS PAGE IS (plain English):
+     A private page only for accounts with the "admin" role (js/admin.js
+     enforces this; the very first account ever created becomes admin). It
+     shows platform-wide stats and five tabs: manage user roles/activation,
+     approve or reject new products, change order statuses (restores stock on
+     cancel), approve/reject reviews, and seed the store with demo data.
+  Used by: admins only.
+============================================================================= -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +19,7 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+    <!-- Admin top navigation (Dashboard / View Storefront). -->
     <nav class="topbar">
         <div class="topbar-inner">
             <a href="admin.html" class="topbar-brand">SriniMart Admin</a>
@@ -35,6 +47,7 @@
         </div>
 
         <div class="container mt-24">
+            <!-- Store-wide statistics cards (filled by js/admin.js). -->
             <div class="stats-grid mb-24" id="statsGrid">
                 <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value" id="stUsers">—</div></div>
                 <div class="stat-card"><div class="stat-label">Buyers</div><div class="stat-value" id="stBuyers">—</div></div>
@@ -46,6 +59,7 @@
                 <div class="stat-card"><div class="stat-label">Pending Reviews</div><div class="stat-value" id="stReviews">—</div></div>
             </div>
 
+            <!-- The five tabs: Users / Products / Orders / Reviews / Demo Data. -->
             <div class="tabs">
                 <button class="tab-btn active" data-tab="users" onclick="showTab('users')">Users</button>
                 <button class="tab-btn" data-tab="products" onclick="showTab('products')">Products</button>
@@ -54,7 +68,7 @@
                 <button class="tab-btn" data-tab="seed" onclick="showTab('seed')">Demo Data</button>
             </div>
 
-            <!-- Users -->
+            <!-- Users: every account, with role dropdown + activate/deactivate. -->
             <div id="tab-users" class="tab-panel active">
                 <div class="table-wrap">
                     <table class="table">
@@ -66,7 +80,7 @@
                 </div>
             </div>
 
-            <!-- Products -->
+            <!-- Products: every listing, with approve/reject + hide/show. -->
             <div id="tab-products" class="tab-panel">
                 <div class="table-wrap">
                     <table class="table">
@@ -78,7 +92,7 @@
                 </div>
             </div>
 
-            <!-- Orders -->
+            <!-- Orders: every order across the store, with a status dropdown. -->
             <div id="tab-orders" class="tab-panel">
                 <div class="table-wrap">
                     <table class="table">
@@ -90,7 +104,7 @@
                 </div>
             </div>
 
-            <!-- Reviews -->
+            <!-- Reviews: every review with approve / reject moderation. -->
             <div id="tab-reviews" class="tab-panel">
                 <div class="table-wrap">
                     <table class="table">
@@ -102,7 +116,7 @@
                 </div>
             </div>
 
-            <!-- Seed -->
+            <!-- Seed: one-click demo data for an empty store. -->
             <div id="tab-seed" class="tab-panel">
                 <div class="card">
                     <h3 style="margin-bottom:8px">Seed Demo Data</h3>
@@ -115,6 +129,7 @@
 
     <div class="toast-container"></div>
 
+    <!-- The page brain + the floating chat assistant. -->
     <script type="module" src="js/admin.js"></script>
     <script type="module" src="js/chatbot.js"></script>
 </body>

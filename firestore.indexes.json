@@ -1,6 +1,19 @@
 {
+  // ==========================================================================
+  // File:    firestore.indexes.json
+  // Purpose: The list of database "indexes" Firebase must build in advance.
+  // ⭐ WHAT THIS FILE IS (plain English):
+  //     Firestore is fast when queries combine fields that are pre-sorted, and
+  //     it refuses queries it hasn't been prepared for. Each entry below tells
+  //     Firebase "the app will sort products/reviews/orders by these fields —
+  //     build an index for it". E.g. the storefront shows products filtered by
+  //     approved + active and sorted by category or price; admins list a
+  //     seller's products newest-first; buyers see their orders newest-first.
+  // Deployed with: firebase deploy --only firestore (includes indexes)
+  // ==========================================================================
   "indexes": [
     {
+      // Storefront: show approved+active products (default sort).
       "collectionGroup": "products",
       "queryScope": "COLLECTION",
       "fields": [
@@ -9,6 +22,7 @@
       ]
     },
     {
+      // Storefront filtered by category.
       "collectionGroup": "products",
       "queryScope": "COLLECTION",
       "fields": [
@@ -18,6 +32,7 @@
       ]
     },
     {
+      // Storefront sorted by price.
       "collectionGroup": "products",
       "queryScope": "COLLECTION",
       "fields": [
@@ -27,6 +42,7 @@
       ]
     },
     {
+      // Storefront filtered by category AND sorted by price.
       "collectionGroup": "products",
       "queryScope": "COLLECTION",
       "fields": [
@@ -37,6 +53,7 @@
       ]
     },
     {
+      // Storefront: newest approved+active products first, per category.
       "collectionGroup": "products",
       "queryScope": "COLLECTION",
       "fields": [
@@ -47,6 +64,7 @@
       ]
     },
     {
+      // Seller dashboard: one seller's products, newest first.
       "collectionGroup": "products",
       "queryScope": "COLLECTION",
       "fields": [
@@ -55,6 +73,7 @@
       ]
     },
     {
+      // Product page: approved reviews of one product, newest first.
       "collectionGroup": "reviews",
       "queryScope": "COLLECTION",
       "fields": [
@@ -64,6 +83,7 @@
       ]
     },
     {
+      // Product page: which user reviewed this product (verified badge).
       "collectionGroup": "reviews",
       "queryScope": "COLLECTION",
       "fields": [
@@ -72,6 +92,7 @@
       ]
     },
     {
+      // Buyer's order history, newest first.
       "collectionGroup": "orders",
       "queryScope": "COLLECTION",
       "fields": [
@@ -80,6 +101,7 @@
       ]
     },
     {
+      // Seller dashboard: orders for one seller's products, newest first.
       "collectionGroup": "sellerOrders",
       "queryScope": "COLLECTION",
       "fields": [

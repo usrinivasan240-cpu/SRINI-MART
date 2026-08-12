@@ -1,4 +1,15 @@
 {
+  // ==========================================================================
+  // File:    firebase.json
+  // Purpose: Firebase CLI configuration — what to deploy and from where.
+  // ⭐ WHAT THIS FILE IS (plain English):
+  //     The checklist Firebase uses when you run "firebase deploy". It says:
+  //     (1) Hosting: publish the "frontend" folder (but skip server.cjs, the
+  //     tests and package.json, which the browser never needs), and for any
+  //     unknown address serve index.html (so deep links work). (2) Firestore:
+  //     use firestore.rules and the indexes file below. (3) Storage: use
+  //     storage.rules. That's the whole deployment recipe.
+  // ==========================================================================
   "hosting": {
     "public": "frontend",
     "ignore": ["server.cjs", "test", "package.json"],

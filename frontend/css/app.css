@@ -4,6 +4,12 @@
  * Module:      Phases 2-6 - Marketplace UI
  * Purpose:     Component styles shared across buyer/seller/admin dashboards.
  * Language:    CSS3
+ * ⭐ WHAT THIS FILE IS (plain English):
+ *     The "skin" for all the logged-in app pages (buyer, product, cart,
+ *     checkout, orders, profile, seller, admin). It styles the shared building
+ *     blocks — the top navigation bar, product cards, tables, tabs, modals,
+ *     star ratings, order status colours, etc. The public landing page uses
+ *     the other file, style.css.
  * ============================================================================
  */
 
@@ -11,6 +17,7 @@
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
+/* Pages sit below the fixed top bar; .page-header is the purple banner. */
 .page { padding-top: 72px; min-height: 100vh; }
 
 .page-header {
@@ -31,8 +38,8 @@
     padding: 24px;
 }
 
-/* --- Topbar (logged-in pages) ----------------------------------------------- */
-
+/* --- Topbar (logged-in pages) --- */
+/* The white bar pinned to the top of dashboard pages: brand, links, avatar. */
 .topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     background: var(--bg-secondary);
@@ -64,8 +71,8 @@
 .topbar-user .user-role { font-size: 11px; color: var(--text-secondary); text-transform: capitalize; }
 .btn-sm { padding: 6px 12px; font-size: 13px; }
 
-/* --- Product grid ------------------------------------------------------------ */
-
+/* --- Product grid --- */
+/* The tiled "shop window": cards of each product with photo, price, discount. */
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -104,8 +111,8 @@
 .product-card .product-actions { display: flex; gap: 8px; padding: 0 14px 14px; }
 .product-card .btn { flex: 1; padding: 8px 10px; font-size: 13px; }
 
-/* --- Filters ----------------------------------------------------------------- */
-
+/* --- Filters --- */
+/* The search bar on the storefront (search / category / price / sort). */
 .filter-bar {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
@@ -135,16 +142,16 @@
     .filter-bar { grid-template-columns: 1fr; }
 }
 
-/* --- Star ratings ------------------------------------------------------------ */
-
+/* --- Star ratings --- */
+/* Gold stars: filled stars show the rating, grey stars are the rest. */
 .stars { color: #d1d5db; font-size: 15px; letter-spacing: 2px; }
 .stars .star { color: #d1d5db; }
 .stars .star.filled { color: #f59e0b; }
 .stars.lg { font-size: 22px; }
 .rating-summary { display: flex; align-items: center; gap: 12px; }
 
-/* --- Product detail ---------------------------------------------------------- */
-
+/* --- Product detail --- */
+/* The single-product page: big photo, name, price, quantity picker. */
 .product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
 @media (max-width: 768px) { .product-detail { grid-template-columns: 1fr; } }
 .product-detail .gallery-img {
@@ -165,8 +172,8 @@
 .quantity-control button:hover { background: var(--border); }
 .quantity-control input { width: 52px; height: 38px; border: none; text-align: center; font-size: 15px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
 
-/* --- Cart -------------------------------------------------------------------- */
-
+/* --- Cart --- */
+/* Shopping cart: item rows on the left, the price summary card on the right. */
 .cart-layout { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
 @media (max-width: 860px) { .cart-layout { grid-template-columns: 1fr; } }
 .cart-items { display: flex; flex-direction: column; gap: 14px; }
@@ -185,8 +192,8 @@
 .summary-row.total { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 12px; font-size: 18px; font-weight: 700; color: var(--text-primary); }
 .summary-card .btn { width: 100%; margin-top: 16px; }
 
-/* --- Orders ------------------------------------------------------------------ */
-
+/* --- Orders --- */
+/* Order cards; the status pill is colour-coded (pending/processing/etc). */
 .order-card {
     background: var(--bg-secondary); border: 1px solid var(--border);
     border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px;
@@ -207,8 +214,8 @@
 .order-item .oi-price { font-size: 14px; font-weight: 600; }
 .order-meta { display: flex; justify-content: space-between; margin-top: 12px; font-size: 13px; color: var(--text-secondary); }
 
-/* --- Tables (admin / seller) ------------------------------------------------- */
-
+/* --- Tables (admin / seller) --- */
+/* Plain data tables; .pill is a small coloured status label. */
 .table-wrap { overflow-x: auto; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); }
 table.table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 640px; }
 .table th, .table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
@@ -224,8 +231,8 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14px; min-width
 .pill.blue { background: #dbeafe; color: #1d4ed8; }
 .pill.gray { background: #f1f5f9; color: #475569; }
 
-/* --- Stats cards ------------------------------------------------------------- */
-
+/* --- Stats cards --- */
+/* The quick-number boxes on dashboards (products, orders, revenue, etc). */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
 .stat-card {
     background: var(--bg-secondary); border: 1px solid var(--border);
@@ -235,8 +242,8 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14px; min-width
 .stat-card .stat-value { font-size: 28px; font-weight: 700; margin-top: 6px; }
 .stat-card .stat-sub { font-size: 12px; color: var(--success); margin-top: 4px; }
 
-/* --- Tabs -------------------------------------------------------------------- */
-
+/* --- Tabs --- */
+/* Tab buttons switch panels; the active one gets a blue underline. */
 .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
 .tab-btn {
     padding: 10px 16px; background: none; border: none; cursor: pointer;
@@ -247,8 +254,8 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14px; min-width
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
-/* --- Modal ------------------------------------------------------------------- */
-
+/* --- Modal --- */
+/* The pop-up dialog (e.g. add/edit product); backdrop dims the page behind. */
 .modal-backdrop {
     position: fixed; inset: 0; background: rgba(15,23,42,0.5);
     display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
@@ -264,8 +271,8 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14px; min-width
 .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-secondary); line-height: 1; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
-/* --- Reviews ----------------------------------------------------------------- */
-
+/* --- Reviews --- */
+/* Review boxes, verified-purchase badge, and the clickable star selector. */
 .review-form { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 20px; }
 .review-list { display: flex; flex-direction: column; gap: 14px; }
 .review-item { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
@@ -280,15 +287,15 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14px; min-width
 .review-select label:hover, .review-select label:hover ~ label,
 .review-select input:checked ~ label { color: #f59e0b; }
 
-/* --- Empty & skeleton states -------------------------------------------------- */
-
+/* --- Empty & skeleton states --- */
+/* Shown while loading or when there is nothing to display yet. */
 .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
 .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
 .skeleton-card { height: 280px; background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 37%, #f1f5f9 63%); background-size: 400% 100%; animation: shimmer 1.4s ease infinite; border-radius: var(--radius-lg); }
 @keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
 
-/* --- Misc -------------------------------------------------------------------- */
-
+/* --- Misc --- */
+/* Small helper utilities: colours, spacing, flex rows, image previews. */
 .muted { color: var(--text-secondary); font-size: 13px; }
 .success-text { color: var(--success); font-weight: 600; }
 .danger-text { color: var(--danger); font-weight: 600; }

@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<!-- ============================================================================
+  File:    cart.html
+  Purpose: The shopping cart — review items, change quantities, see totals.
+  ⭐ WHAT THIS PAGE IS (plain English):
+     Shows everything the buyer has added to the cart. js/cart.js lists the
+     lines, allows + / − quantity changes and removal, and calculates the
+     subtotal, discount, shipping (FREE over ₹500, else ₹40) and total.
+     "Proceed to Checkout" moves the buyer to checkout.html. The cart updates
+     live, so this page reflects changes made on other pages too.
+  Used by: buyers.
+============================================================================= -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +19,7 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+    <!-- Shared top navigation bar. -->
     <nav class="topbar">
         <div class="topbar-inner">
             <a href="buyer.html" class="topbar-brand">SriniMart</a>
@@ -38,7 +50,9 @@
 
         <div class="container mt-24">
             <div class="cart-layout">
+                <!-- Left: the cart lines (photo, name, price, quantity, remove). -->
                 <div class="cart-items" id="cartItems"></div>
+                <!-- Right: the running totals. Hidden while the cart is empty. -->
                 <div class="card summary-card" id="summaryCard" style="display:none">
                     <h3 style="margin-bottom:8px">Order Summary</h3>
                     <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal">₹0.00</span></div>
@@ -53,6 +67,7 @@
 
     <div class="toast-container"></div>
 
+    <!-- The page brain + the floating chat assistant. -->
     <script type="module" src="js/cart.js"></script>
     <script type="module" src="js/chatbot.js"></script>
 </body>

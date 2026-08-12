@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+<!-- ============================================================================
+  File:    product.html
+  Purpose: Single product detail page + customer reviews.
+  ⭐ WHAT THIS PAGE IS (plain English):
+     Opened with a link like product.html?id=abc123. js/product.js reads that
+     "id", downloads the product, and draws the photo, price, stock, quantity
+     picker and "Add to Cart"/"Buy Now" buttons into #productArea. Below that
+     are the approved reviews, plus a "Write a Review" form for buyers.
+  Used by: buyers browsing products.
+============================================================================= -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +18,7 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+    <!-- Shared top navigation bar (same as the other app pages). -->
     <nav class="topbar">
         <div class="topbar-inner">
             <a href="buyer.html" class="topbar-brand">SriniMart</a>
@@ -30,11 +41,15 @@
 
     <div class="page">
         <div class="container mt-24">
+            <!-- The product details (photo, name, price, stock, buttons) are
+                 drawn here by product.js. A skeleton block shows while loading. -->
             <div id="productArea"><div class="skeleton-card" style="height:400px"></div></div>
 
             <hr class="divider">
 
             <!-- Reviews -->
+            <!-- Approved customer reviews appear in #reviewList; the "Write a
+                 Review" form is injected into #reviewFormWrap when allowed. -->
             <div class="flex-between mb-16">
                 <h2 class="section-title" style="margin:0">Customer Reviews</h2>
                 <span id="ratingSummary" class="muted"></span>
@@ -46,6 +61,7 @@
 
     <div class="toast-container"></div>
 
+    <!-- The page brain + the floating chat assistant. -->
     <script type="module" src="js/product.js"></script>
     <script type="module" src="js/chatbot.js"></script>
 </body>

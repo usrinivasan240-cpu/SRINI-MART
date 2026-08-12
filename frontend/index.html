@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+<!-- ============================================================================
+  File:    index.html
+  Purpose: The public landing / welcome page for SriniMart.
+  ⭐ WHAT THIS PAGE IS (plain English):
+     This is the first page visitors see — a simple marketing page (no login
+     needed, no code behind it). It explains what SriniMart is and points
+     people to the sign-in page. It loads only the base stylesheet
+     (css/style.css); there is no page-brain .js file here.
+  Used by: signed-out visitors; any user clicking "SriniMart" in the navbar.
+============================================================================= -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +18,7 @@
 </head>
 <body>
     <!-- Navigation -->
+    <!-- The top bar: brand logo + "Features", "How It Works" anchors + Login. -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">SriniMart</a>
@@ -20,6 +31,7 @@
     </nav>
 
     <!-- Hero Section -->
+    <!-- Big welcome banner with the two main calls-to-action. -->
     <section class="hero">
         <div class="hero-content">
             <h1>Welcome to SriniMart</h1>
@@ -32,6 +44,8 @@
     </section>
 
     <!-- Features Section -->
+    <!-- Four cards selling the platform: multi-seller, secure payments, fast
+         delivery, and reviews & ratings. -->
     <section id="features" class="section">
         <div class="container">
             <h2>Why Choose SriniMart?</h2>
@@ -61,6 +75,7 @@
     </section>
 
     <!-- How It Works Section -->
+    <!-- The three-step story: create account → browse or list → checkout. -->
     <section id="how-it-works" class="section section-alt">
         <div class="container">
             <h2>How It Works</h2>
@@ -85,6 +100,7 @@
     </section>
 
     <!-- Footer -->
+    <!-- Simple copyright line. -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2024 SriniMart. All rights reserved.</p>

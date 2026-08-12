@@ -6,6 +6,12 @@
 //              rate limiting, caching).
 // Run:         npm test  (from frontend/)
 // Language:    JavaScript (ES Module)
+// ⭐ WHAT THIS FILE IS (plain English):
+//     The app's "quality gate". Each test grabs one small pure function from
+//     core.js, feeds it known inputs, and checks the output is exactly what we
+//     expect. If a future change breaks any behaviour, the matching test fails
+//     and turns red. It only tests core.js's pure helpers (no browser, no
+//     Firebase) so it can run anywhere Node is installed.
 // ============================================================================
 
 import { test } from 'node:test';

@@ -3,6 +3,13 @@
 // Module:      Phase 7 - AI Chatbot
 // Purpose:     Floating chat widget with Firestore history, client-side rate
 //              limiting, FAQ answers, and live product search.
+//
+// ⭐ WHAT THIS FILE IS (plain English):
+//   The floating "💬" assistant that appears in the bottom-right corner of
+//   the app pages. It understands simple questions about orders, shipping,
+//   payments and returns (using the rule book in core.js), can search the
+//   live product list, remembers the conversation per user in the chats
+//   collection, and stops people from spamming more than 8 messages a minute.
 // Language:    JavaScript (ES Module)
 // ============================================================================
 
@@ -14,12 +21,15 @@ import {
     detectIntent, faqResponse, pickFallback, isRateLimited
 } from "./ui.js";
 
+// Keep at most this many messages in the saved history.
 const MAX_HISTORY = 50;
 
-let history = [];
-let userId = null;
+let history = [];   // this session's conversation (in memory)
+let userId = null;  // signed-in user's id (used to save the chat)
 
 // --- Widget DOM ---------------------------------------------------------------
+// The widget is built entirely with JavaScript (no HTML file changes needed).
+// STYLES = the CSS for the floating button, chat window, bubbles, etc.
 
 const STYLES = `
 #sm-chat-fab {
@@ -66,6 +76,8 @@ const STYLES = `
 }
 `;
 
+// ensureWidget: builds the chat button + window once per page, and wires up
+// open/close/send behaviour.
 function ensureWidget() {
     if (document.getElementById('sm-chat-widget-root')) return;
     const root = document.createElement('div');
@@ -101,6 +113,8 @@ function ensureWidget() {
 
 // --- Messaging ------------------------------------------------------------------
 
+// addMessage: appends a bubble to the chat window. html=true allows links in
+// the message (used for product results); otherwise text is shown safely.
 function addMessage(role, text, html = false) {
     history.push({ role, text, ts: Date.now() });
     const body = document.getElementById('sm-chat-body');
@@ -113,6 +127,7 @@ function addMessage(role, text, html = false) {
     return el;
 }
 
+// renderHistory: redraws the whole conversation (used on page load).
 function renderHistory() {
     const body = document.getElementById('sm-chat-body');
     body.innerHTML = '';
@@ -125,6 +140,7 @@ function renderHistory() {
     body.scrollTop = body.scrollHeight;
 }
 
+// showTyping: a temporary "Assistant is typing..." line while the bot thinks.
 function showTyping() {
     const body = document.getElementById('sm-chat-body');
     const el = document.createElement('div');
@@ -136,6 +152,8 @@ function showTyping() {
     return el;
 }
 
+// persist: saves the recent conversation to the user's chats/{uid} record so
+// it comes back next time (best-effort — failing to save is never an error).
 async function persist() {
     if (!userId) return;
     const trimmed = history.slice(-MAX_HISTORY);
@@ -148,6 +166,8 @@ async function persist() {
 }
 
 // --- Product search ---------------------------------------------------------------
+// Downloads the approved/active products once and keeps the 3 best text
+// matches, so the bot can answer things like "show me headphones".
 
 async function searchProducts(query) {
     try {
@@ -169,6 +189,7 @@ async function searchProducts(query) {
     }
 }
 
+// productResultHtml: turns the search results into chat bubbles with links.
 function productResultHtml(products, term) {
     if (!products.length) {
         return `I couldn't find products matching "<b>${escapeHtml(term)}</b>". Try browsing the full <a href="buyer.html" class="sm-link">storefront</a>.`;
@@ -179,10 +200,13 @@ function productResultHtml(products, term) {
 }
 
 // --- Handle a message --------------------------------------------------------------
+// The main brain: rate-check the user, figure out the intent, then answer
+// from the FAQ rules or a live product search.
 
 async function handleMessage(text) {
     const typing = showTyping();
 
+    // Too many messages in the last minute? Politely refuse.
     if (isRateLimited(history)) {
         typing.remove();
         addMessage('bot', "You're sending messages a bit too quickly. Please wait a minute and try again. 🙂");
@@ -195,21 +219,24 @@ async function handleMessage(text) {
     let response;
     let html = false;
 
+    // Product questions get a live search answer with links.
     if (intent === 'products' && productQuery) {
         const results = await searchProducts(productQuery);
         response = productResultHtml(results, productQuery);
         html = true;
     } else {
+        // Everything else comes from the FAQ rule book (or a fallback line).
         response = faqResponse(intent) || pickFallback();
     }
 
-    // Small delay to feel like an assistant.
+    // Small delay so it feels like a real assistant replying.
     await new Promise(r => setTimeout(r, 500 + Math.random() * 400));
     typing.remove();
     addMessage('bot', response, html);
     await persist();
 }
 
+// sendMessage: reads the input box, shows the user's bubble, and replies.
 async function sendMessage() {
     const input = document.getElementById('sm-chat-input');
     const text = input.value.trim();
@@ -220,6 +247,8 @@ async function sendMessage() {
 }
 
 // --- Init --------------------------------------------------------------------------
+// Build the widget, wait for login info, and load any saved chat history.
+// Signed-out visitors never see the chat at all.
 
 async function init() {
     ensureWidget();
@@ -236,10 +265,12 @@ async function init() {
     } catch (e) { history = []; }
 
     renderHistory();
+    // First-time visitors get a friendly hello bubble.
     if (!history.length) {
         addMessage('bot', "Hi! 👋 I'm the SriniMart Assistant. Ask me about your orders, shipping, payments, or finding products.");
         persist();
     }
 }
 
+// Start the widget.
 init();

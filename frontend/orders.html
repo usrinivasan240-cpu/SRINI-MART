@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<!-- ============================================================================
+  File:    orders.html
+  Purpose: Buyer order history, status tracking, and order cancellation.
+  ⭐ WHAT THIS PAGE IS (plain English):
+     Lists every order this buyer has placed, newest first, with a status badge
+     (Pending → Processing → Shipped → Delivered, or Cancelled). The "View
+     Details" button expands an order to show the delivery address and price
+     breakdown. "Cancel Order" is only available while the order is still
+     Pending or Processing. The list updates live via js/orders.js.
+  Used by: buyers.
+============================================================================= -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +19,7 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+    <!-- Shared top navigation bar. -->
     <nav class="topbar">
         <div class="topbar-inner">
             <a href="buyer.html" class="topbar-brand">SriniMart</a>
@@ -37,12 +49,15 @@
         </div>
 
         <div class="container mt-24">
+            <!-- js/orders.js fills this with order cards (and the empty state
+                 message if there are none yet). -->
             <div id="orderList"><div class="muted">Loading orders...</div></div>
         </div>
     </div>
 
     <div class="toast-container"></div>
 
+    <!-- The page brain + the floating chat assistant. -->
     <script type="module" src="js/orders.js"></script>
     <script type="module" src="js/chatbot.js"></script>
 </body>

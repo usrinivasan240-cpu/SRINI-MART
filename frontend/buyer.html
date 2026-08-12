@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<!-- ============================================================================
+  File:    buyer.html
+  Purpose: The storefront — browse and search all approved products.
+  ⭐ WHAT THIS PAGE IS (plain English):
+     This is the main shopping page that buyers land on after login. It shows
+     a search box, category filter, price filter, and sort dropdown above a
+     grid of product cards. Clicking a card opens product.html; "Add to Cart"
+     adds an item. The page's brain is js/buyer.js; the chat assistant
+     (js/chatbot.js) also loads here. The topbar is shared by all app pages.
+  Used by: buyers (and any other signed-in user).
+============================================================================= -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +19,9 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+    <!-- Shared top navigation bar (also used on cart/orders/profile/etc.).
+         The user name/role/avatar and logout are filled in by the page brain.
+         Cart count (#cartCount) shows how many lines are in the cart. -->
     <nav class="topbar">
         <div class="topbar-inner">
             <a href="buyer.html" class="topbar-brand">SriniMart</a>
@@ -38,6 +52,8 @@
 
         <div class="container mt-24">
             <!-- Filters -->
+            <!-- Controls that narrow the product list. buyer.js listens to
+                 these and reloads the grid as the user types or changes them. -->
             <div class="filter-bar">
                 <div class="form-group">
                     <label>Search</label>
@@ -64,6 +80,8 @@
             </div>
 
             <!-- Results -->
+            <!-- buyer.js fills #productGrid with product cards and shows the
+                 "Load More" button until all matching products are visible. -->
             <div class="flex-between mb-16">
                 <h2 class="section-title" style="margin:0">All Products</h2>
                 <span class="muted" id="resultCount"></span>
@@ -77,6 +95,7 @@
 
     <div class="toast-container"></div>
 
+    <!-- The page brain + the floating chat assistant. -->
     <script type="module" src="js/buyer.js"></script>
     <script type="module" src="js/chatbot.js"></script>
 </body>

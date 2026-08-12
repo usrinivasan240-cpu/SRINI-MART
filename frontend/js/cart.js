@@ -2,6 +2,12 @@
 // File:        cart.js
 // Module:      Phase 2/4 - Shopping Cart
 // Purpose:     Cart items listing, quantity update, remove, and summary.
+//
+// ⭐ WHAT THIS FILE IS (plain English):
+//   The brain of cart.html. It lists everything the customer has added,
+//   lets them change quantities or remove items, and adds up the money
+//   (subtotal, discounts, shipping fee, grand total). It "listens" to the
+//   database, so if anything changes the page updates by itself.
 // Language:    JavaScript (ES Module)
 // ============================================================================
 
@@ -11,16 +17,22 @@ import {
 } from "./firebase.js";
 import { toast, requireAuth, logout, formatMoney, escapeHtml, emptyState } from "./ui.js";
 
-let session = null;
-let cart = [];
+// --- Page state -----------------------------------------------------------------
+let session = null;   // the signed-in user
+let cart = [];        // this user's cart lines
 
+// Shipping rule: FREE above ₹500, otherwise a flat ₹40.
 const FREE_SHIPPING_THRESHOLD = 500;
 const SHIPPING_FEE = 40;
 
+// Shortcuts to the two main areas of the page.
 const itemsEl = document.getElementById('cartItems');
 const summaryEl = document.getElementById('summaryCard');
+// Did the user click "Buy Now"? Then skip straight to checkout.
 const buyNow = new URLSearchParams(window.location.search).get('buynow') === '1';
 
+// computeTotals: works out subtotal, discount (MRP − price), shipping and the
+// final total from the current cart contents.
 function computeTotals() {
     let subtotal = 0, mrpTotal = 0;
     for (const item of cart) {
@@ -32,6 +44,8 @@ function computeTotals() {
     return { subtotal, discount, shipping, total: subtotal + shipping };
 }
 
+// renderCart: draws every cart line (photo, name, price, quantity + / −,
+// remove button) and fills in the summary numbers on the right.
 function renderCart() {
     itemsEl.innerHTML = '';
     if (!cart.length) {
@@ -68,6 +82,7 @@ function renderCart() {
         itemsEl.appendChild(row);
     });
 
+    // Fill the price summary card.
     summaryEl.style.display = 'block';
     document.getElementById('sumSubtotal').textContent = formatMoney(totals.subtotal);
     document.getElementById('sumShipping').textContent = totals.shipping === 0 ? 'FREE' : formatMoney(totals.shipping);
@@ -75,12 +90,15 @@ function renderCart() {
     document.getElementById('sumTotal').textContent = formatMoney(totals.total);
 }
 
+// refreshCart: one-shot download of the user's cart lines.
 async function refreshCart() {
     const snap = await getDocs(query(collection(db, 'cartItems'), where('userId', '==', session.user.uid)));
     cart = snap.docs.map(d => ({ id: d.id, productId: d.data().productId, ...d.data(), addedAt: d.data().updatedAt?.toDate?.() || 0 }));
     renderCart();
 }
 
+// changeQty: the + / − buttons. Checks the real product stock in the database
+// before allowing a higher quantity; dropping to 0 removes the item.
 window.changeQty = async function(productId, delta) {
     const item = cart.find(i => i.productId === productId);
     if (!item) return;
@@ -102,6 +120,7 @@ window.changeQty = async function(productId, delta) {
     }
 };
 
+// removeItem: deletes a cart line.
 window.removeItem = async function(productId) {
     const item = cart.find(i => i.productId === productId);
     if (!item) return;
@@ -110,12 +129,14 @@ window.removeItem = async function(productId) {
     refreshCart();
 };
 
+// updateCartCount: shows how many lines are in the cart on the icon.
 async function updateCartCount() {
     const snap = await getDocs(query(collection(db, 'cartItems'), where('userId', '==', session.user.uid)));
     const el = document.getElementById('cartCount');
     if (el) el.textContent = snap.size;
 }
 
+// --- Init ------------------------------------------------------------------------
 async function init() {
     session = await requireAuth();
     if (!session) return;
@@ -125,7 +146,8 @@ async function init() {
     document.getElementById('userAvatar').textContent = (session.profile.firstName || session.profile.email || 'U').charAt(0).toUpperCase();
     document.getElementById('logoutBtn').addEventListener('click', logout);
 
-    // Live updates to the cart.
+    // Live updates: whenever the cart changes (even in another tab) the page
+    // re-draws itself automatically.
     onSnapshot(query(collection(db, 'cartItems'), where('userId', '==', session.user.uid)), (snap) => {
         cart = snap.docs.map(d => ({ id: d.id, productId: d.data().productId, ...d.data(), addedAt: d.data().updatedAt?.toDate?.() || 0 }));
         renderCart();
@@ -137,7 +159,9 @@ async function init() {
         window.location.href = 'checkout.html';
     });
 
+    // If the user arrived from a product page's "Buy Now" button, jump on.
     if (buyNow) window.location.href = 'checkout.html';
 }
 
+// Start the page brain.
 init();

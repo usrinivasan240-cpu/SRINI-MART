@@ -3,6 +3,13 @@
 // Module:      Phase 6 - Admin Module
 // Purpose:     Platform statistics, user management, product moderation,
 //              order management, review moderation, and demo data seeding.
+//
+// ⭐ WHAT THIS FILE IS (plain English):
+//   The brain of admin.html — the control room of the whole marketplace.
+//   The admin (the very first account to sign up) can: see store-wide stats,
+//   activate/deactivate users or change their role, approve or reject new
+//   products, change order statuses (which restores stock on cancel),
+//   approve/reject reviews, and fill the store with demo data.
 // Language:    JavaScript (ES Module)
 // ============================================================================
 
@@ -15,6 +22,7 @@ import { toast, requireAuth, logout, formatMoney, formatDate, escapeHtml } from 
 let session = null;
 
 // --- Tabs ----------------------------------------------------------------------
+// showTab: switches between Users / Products / Orders / Reviews / Demo Data.
 
 window.showTab = function(name) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
@@ -23,6 +31,9 @@ window.showTab = function(name) {
 };
 
 // --- Stats ----------------------------------------------------------------------
+// Fills the top number cards: user/buyer/seller counts, product counts,
+// pending approvals, order count, total revenue (excluding cancelled), and
+// how many reviews are waiting to be moderated.
 
 async function loadStats() {
     let users = 0, buyers = 0, sellers = 0, products = 0, pending = 0, orders = 0, revenue = 0, pendingReviews = 0;
@@ -62,6 +73,8 @@ async function loadStats() {
 }
 
 // --- Users ----------------------------------------------------------------------
+// Lists every account. The admin can change a user's role or deactivate them
+// (but can't touch their own row).
 
 async function loadUsers() {
     const tbody = document.getElementById('usersBody');
@@ -95,6 +108,7 @@ async function loadUsers() {
     }).join('');
 }
 
+// toggleUser: flips a user between active and deactivated.
 window.toggleUser = async function(userId, currentlyActive) {
     try {
         await updateDoc(doc(db, 'users', userId), {
@@ -106,6 +120,7 @@ window.toggleUser = async function(userId, currentlyActive) {
     } catch (e) { toast('Could not update user', 'error'); }
 };
 
+// changeRole: swaps a user between buyer / seller / admin.
 window.changeRole = async function(userId, role) {
     try {
         await updateDoc(doc(db, 'users', userId), { role, updatedAt: serverTimestamp() });
@@ -115,6 +130,8 @@ window.changeRole = async function(userId, role) {
 };
 
 // --- Products ---------------------------------------------------------------------
+// Lists ALL products across every seller. The admin approves/rejects new
+// listings and can hide/show approved ones on the storefront.
 
 async function loadProducts() {
     const tbody = document.getElementById('productsBody');
@@ -146,6 +163,8 @@ async function loadProducts() {
     }).join('');
 }
 
+// approveProduct: approve=true lets the product appear in the store; false
+// "rejects" it (back to not-approved).
 window.approveProduct = async function(productId, approve) {
     try {
         await updateDoc(doc(db, 'products', productId), {
@@ -158,6 +177,7 @@ window.approveProduct = async function(productId, approve) {
     } catch (e) { toast('Could not update product', 'error'); }
 };
 
+// toggleProductVisibility: hide/show an approved product on the storefront.
 window.toggleProductVisibility = async function(productId) {
     const snap = await getDoc(doc(db, 'products', productId));
     if (!snap.exists()) return;
@@ -168,6 +188,8 @@ window.toggleProductVisibility = async function(productId) {
 };
 
 // --- Orders -----------------------------------------------------------------------
+// Lists every order in the whole store with a dropdown to change its status.
+// IMPORTANT: when an order is cancelled, the products' stock is given BACK.
 
 async function loadOrders() {
     const tbody = document.getElementById('ordersBody');
@@ -194,6 +216,9 @@ async function loadOrders() {
     }).join('');
 }
 
+// changeOrderStatus: updates an order's status. If the new status is
+// "cancelled" (and it wasn't before), every item's quantity is returned to
+// the product's stock — so nothing is lost.
 window.changeOrderStatus = async function(orderId, status) {
     try {
         const orderSnap = await getDoc(doc(db, 'orders', orderId));
@@ -215,6 +240,8 @@ window.changeOrderStatus = async function(orderId, status) {
 };
 
 // --- Reviews ----------------------------------------------------------------------
+// Shows every review. New reviews arrive "pending"; the admin approves or
+// rejects them, which decides whether buyers see them.
 
 async function loadReviews() {
     const tbody = document.getElementById('reviewsBody');
@@ -244,6 +271,7 @@ async function loadReviews() {
     }).join('');
 }
 
+// moderateReview: sets a review's status to approved or rejected.
 window.moderateReview = async function(reviewId, status) {
     try {
         await updateDoc(doc(db, 'reviews', reviewId), { status, updatedAt: serverTimestamp() });
@@ -254,6 +282,9 @@ window.moderateReview = async function(reviewId, status) {
 };
 
 // --- Demo data seeding --------------------------------------------------------------
+// One click fills an empty store with sample categories and products so the
+// demo looks alive. Categories are only added if they don't exist yet, and
+// products are only created when the store has none.
 
 const SEED_CATEGORIES = [
     { name: 'Electronics', description: 'Gadgets, mobile phones, laptops and accessories' },
@@ -264,6 +295,7 @@ const SEED_CATEGORIES = [
     { name: 'Sports & Fitness', description: 'Gym equipment, sports gear and activewear' }
 ];
 
+// The sample products (emoji stands in for a photo).
 const SEED_PRODUCTS = [
     { name: 'Wireless Bluetooth Earbuds', category: 'Electronics', price: 799, mrp: 2499, stock: 120, emoji: '🎧' },
     { name: 'Smart Fitness Band', category: 'Electronics', price: 1299, mrp: 3999, stock: 80, emoji: '⌚' },
@@ -282,7 +314,7 @@ async function seedData() {
     btn.disabled = true;
 
     try {
-        // Categories (idempotent by name).
+        // 1. Create categories that don't exist yet (idempotent by name).
         const catSnap = await getDocs(collection(db, 'categories'));
         const existing = new Set(catSnap.docs.map(d => d.data().name));
         for (const c of SEED_CATEGORIES) {
@@ -297,7 +329,7 @@ async function seedData() {
         }
         const categories = (await getDocs(collection(db, 'categories'))).docs.map(d => ({ id: d.id, ...d.data() }));
 
-        // Only seed products if the store is empty.
+        // 2. Only seed products if the store is empty.
         const prodSnap = await getDocs(collection(db, 'products'));
         if (prodSnap.empty) {
             for (const sp of SEED_PRODUCTS) {
@@ -336,7 +368,7 @@ async function seedData() {
 }
 
 // --- Init --------------------------------------------------------------------------
-
+// Admins only — requireAuth sends non-admins to their own homepage.
 async function init() {
     session = await requireAuth(['admin']);
     if (!session) return;
@@ -350,4 +382,5 @@ async function init() {
     await Promise.all([loadStats(), loadUsers(), loadProducts(), loadOrders(), loadReviews()]);
 }
 
+// Start the page brain.
 init();

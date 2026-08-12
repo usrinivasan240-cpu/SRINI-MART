@@ -3,6 +3,13 @@
 // Module:      Phase 3 - Seller Module
 // Purpose:     Seller dashboard with product CRUD (incl. image upload to
 //              Firebase Storage), inventory stats, and order viewing.
+//
+// ⭐ WHAT THIS FILE IS (plain English):
+//   The brain of seller.html — the private area for people who sell items.
+//   Sellers can add/edit/delete their products (photos go to Firebase
+//   Storage), switch a product on/off, watch their stock levels, and see the
+//   orders buyers placed for their products. New products start as "Pending"
+//   until an admin approves them.
 // Language:    JavaScript (ES Module)
 // ============================================================================
 
@@ -13,13 +20,15 @@ import {
 } from "./firebase.js";
 import { toast, requireAuth, logout, formatMoney, escapeHtml, emptyState, setLoading, cachedFetch } from "./ui.js";
 
-let session = null;
-let products = [];
-let categories = [];
-let imageFiles = [];
-let existingImages = [];
+// --- Page state -----------------------------------------------------------------
+let session = null;      // the signed-in seller
+let products = [];       // this seller's products
+let categories = [];     // store categories (for the dropdown)
+let imageFiles = [];     // newly-chosen photo files (not yet uploaded)
+let existingImages = []; // URLs of already-uploaded photos (when editing)
 
-// --- Tabs ----------------------------------------------------------------------
+// --- Tabs -----------------------------------------------------------------------
+// showTab: switches between the "Products" and "Orders" panels.
 
 window.showTab = function(name) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
@@ -28,7 +37,9 @@ window.showTab = function(name) {
     if (name === 'orders') loadSellerOrders();
 };
 
-// --- Stats ---------------------------------------------------------------------
+// --- Stats ----------------------------------------------------------------------
+// Quick numbers for the top cards: total products, active products, low-stock
+// (≤5 left), and how many orders are still waiting (pending).
 
 async function loadStats() {
     const active = products.filter(p => p.isActive).length;
@@ -48,8 +59,9 @@ async function loadStats() {
     document.getElementById('statOrders').textContent = pending;
 }
 
-// --- Products ------------------------------------------------------------------
+// --- Products -------------------------------------------------------------------
 
+// loadProducts: downloads everything this seller owns, newest first.
 async function loadProducts() {
     const snap = await getDocs(query(
         collection(db, 'products'),
@@ -61,6 +73,8 @@ async function loadProducts() {
     loadStats();
 }
 
+// renderProducts: draws the products table (photo, name, category, price,
+// stock, active/pending pills, and the Edit / Activate / Delete buttons).
 function renderProducts() {
     const tbody = document.getElementById('productTableBody');
     if (!products.length) {
@@ -88,6 +102,7 @@ function renderProducts() {
         </tr>`).join('');
 }
 
+// loadCategories: fills the category dropdown (cached for 5 minutes).
 async function loadCategories() {
     categories = await cachedFetch('srinimart_categories', 5 * 60 * 1000, async () => {
         const snap = await getDocs(collection(db, 'categories'));
@@ -97,6 +112,8 @@ async function loadCategories() {
         categories.map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
 }
 
+// openProductModal / closeProductModal: open a blank "Add Product" form,
+// or close the modal.
 window.openProductModal = function() {
     document.getElementById('productForm').reset();
     document.getElementById('pId').value = '';
@@ -112,6 +129,8 @@ window.closeProductModal = function() {
     document.getElementById('productModal').classList.remove('open');
 };
 
+// editProduct: fills the form with a product's current values so the seller
+// can change them (existing photos are loaded into the preview).
 window.editProduct = function(id) {
     const p = products.find(x => x.id === id);
     if (!p) return;
@@ -130,6 +149,8 @@ window.editProduct = function(id) {
     document.getElementById('productModal').classList.add('open');
 };
 
+// renderImagePreviews: shows small thumbnails of the photos that are already
+// on the product, each with an × to remove it.
 function renderImagePreviews() {
     const wrap = document.getElementById('pImagePreviews');
     wrap.innerHTML = '';
@@ -142,11 +163,14 @@ function renderImagePreviews() {
     });
 }
 
+// removeImage: drops one photo from the "existing images" list.
 window.removeImage = function(index) {
     existingImages.splice(index, 1);
     renderImagePreviews();
 };
 
+// toggleProduct: switches a product between "Active" (visible in the store)
+// and "Inactive" (hidden). Only approved products ever show either way.
 window.toggleProduct = async function(id) {
     const p = products.find(x => x.id === id);
     if (!p) return;
@@ -157,6 +181,8 @@ window.toggleProduct = async function(id) {
     toast(p.isActive ? 'Product activated' : 'Product deactivated', 'info');
 };
 
+// deleteProduct: removes the product record AND tries to delete its photos
+// from Firebase Storage.
 window.deleteProduct = async function(id) {
     if (!confirm('Delete this product permanently?')) return;
     const p = products.find(x => x.id === id);
@@ -177,6 +203,8 @@ window.deleteProduct = async function(id) {
 };
 
 // --- Image upload ----------------------------------------------------------------
+// When the seller picks photos, show previews right away (the actual upload
+// to Firebase Storage happens later, when the form is saved).
 
 document.getElementById('pImages').addEventListener('change', (e) => {
     imageFiles = [...e.target.files];
@@ -191,6 +219,8 @@ document.getElementById('pImages').addEventListener('change', (e) => {
     }
 });
 
+// uploadNewImages: sends the chosen files to Firebase Storage. Each photo is
+// saved inside the product's own folder with a timestamp so names never clash.
 async function uploadNewImages(productId) {
     const urls = [];
     for (const file of imageFiles) {
@@ -202,6 +232,8 @@ async function uploadNewImages(productId) {
 }
 
 // --- Save product -----------------------------------------------------------------
+// Saves a new product (or updates an existing one). Note isApproved is always
+// set to false on create — an admin must approve it before it reaches the store.
 
 async function saveProduct(e) {
     e.preventDefault();
@@ -219,8 +251,10 @@ async function saveProduct(e) {
     try {
         const editingId = document.getElementById('pId').value;
         let productId = editingId;
+        // New products get a fresh id generated by the browser.
         if (!editingId) productId = doc(collection(db, 'products')).id;
 
+        // Upload new photos first, then combine with the kept old ones.
         const uploaded = await uploadNewImages(productId);
         const images = [...existingImages, ...uploaded];
 
@@ -245,8 +279,10 @@ async function saveProduct(e) {
         };
 
         if (editingId) {
+            // Editing keeps createdAt untouched (merge only adds/updates fields).
             await setDoc(doc(db, 'products', editingId), data, { merge: true });
         } else {
+            // Creating sets createdAt too.
             await setDoc(doc(db, 'products', productId), { ...data, createdAt: serverTimestamp() });
         }
 
@@ -261,6 +297,8 @@ async function saveProduct(e) {
 }
 
 // --- Seller orders ----------------------------------------------------------------
+// Shows the orders that contain this seller's products (copied into
+// sellerOrders at checkout time), newest first.
 
 async function loadSellerOrders() {
     const listEl = document.getElementById('sellerOrderList');
@@ -306,7 +344,7 @@ async function loadSellerOrders() {
 }
 
 // --- Init --------------------------------------------------------------------------
-
+// Sellers only — requireAuth kicks non-sellers to their own homepage.
 async function init() {
     session = await requireAuth(['seller']);
     if (!session) return;
@@ -323,4 +361,5 @@ async function init() {
     await loadProducts();
 }
 
+// Start the page brain.
 init();

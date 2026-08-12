@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<!-- ============================================================================
+  File:    checkout.html
+  Purpose: The final step — shipping address, payment method, place order.
+  ⭐ WHAT THIS PAGE IS (plain English):
+     The buyer fills in their delivery address, picks a payment option, and
+     clicks "Place Order". js/checkout.js validates the address, re-checks the
+     stock, runs a MOCK payment (no real money is taken in this demo), then
+     creates the order, copies it to each seller involved, reduces stock and
+     clears the cart — all as one atomic operation. It then jumps to
+     orders.html to show the new order.
+  Used by: buyers with items in their cart.
+============================================================================= -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +20,7 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+    <!-- Shared top navigation bar. -->
     <nav class="topbar">
         <div class="topbar-inner">
             <a href="buyer.html" class="topbar-brand">SriniMart</a>
@@ -38,6 +51,8 @@
 
         <div class="container mt-24">
             <div class="cart-layout">
+                <!-- Left card: the delivery address form (pre-filled from the
+                     user's saved profile address if they have one). -->
                 <div class="card">
                     <h3 style="margin-bottom:16px">Shipping Address</h3>
                     <div class="form-row">
@@ -71,6 +86,8 @@
 
                     <hr class="divider">
 
+                    <!-- Payment choice. IMPORTANT: this demo uses a mock
+                         payment processor — no real money ever changes hands. -->
                     <h3 style="margin-bottom:16px">Payment Method</h3>
                     <div class="form-group">
                         <label><input type="radio" name="payment" value="cod" checked> Cash on Delivery</label>
@@ -84,6 +101,7 @@
                     <p class="muted">Demo note: this checkout uses a mock payment processor. No real payment is made.</p>
                 </div>
 
+                <!-- Right card: the running order summary + Place Order button. -->
                 <div class="card summary-card">
                     <h3 style="margin-bottom:8px">Order Summary</h3>
                     <div class="summary-row"><span>Items</span><span id="sumItems">0</span></div>
@@ -99,6 +117,7 @@
 
     <div class="toast-container"></div>
 
+    <!-- The page brain + the floating chat assistant. -->
     <script type="module" src="js/checkout.js"></script>
     <script type="module" src="js/chatbot.js"></script>
 </body>

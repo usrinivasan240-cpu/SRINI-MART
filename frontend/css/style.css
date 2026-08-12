@@ -5,9 +5,17 @@
  * Purpose:     CSS for landing page and login/register page.
  *              Modern, responsive design with CSS variables.
  * Language:    CSS3
+ * ⭐ WHAT THIS FILE IS (plain English):
+ *     The "skin" of the website — it decides how things look (colors, spacing,
+ *     size, hover effects). This file styles only the public landing page
+ *     (index.html) and the login/register page (login.html). Dashboard pages
+ *     use the other file, app.css. The colours below are shared "design
+ *     tokens": define them once here, reuse everywhere.
  * ============================================================================
  */
 
+/* The site's colour and size palette. Changing a value here updates it
+   everywhere that uses that name (e.g. --primary = the main blue). */
 :root {
     --primary: #2563eb;
     --primary-dark: #1d4ed8;
@@ -27,8 +35,10 @@
     --transition: all 0.2s ease;
 }
 
+/* Reset: remove the browser's default spacing so every page starts clean. */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* The whole-page look: font, background, text colour. */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--bg-primary);
@@ -36,10 +46,11 @@ body {
     line-height: 1.6;
 }
 
+/* Links are blue and fade when you hover over them. */
 a { color: var(--primary); text-decoration: none; transition: var(--transition); }
 a:hover { color: var(--primary-dark); }
 
-/* Navbar */
+/* Navbar — the fixed bar at the top of the landing page. */
 .navbar {
     background: var(--bg-secondary);
     box-shadow: var(--shadow);
@@ -73,7 +84,7 @@ a:hover { color: var(--primary-dark); }
 .nav-links a { color: var(--text-secondary); font-size: 14px; }
 .nav-links a:hover { color: var(--primary); }
 
-/* Buttons */
+/* Buttons — one base style plus variants (primary blue, secondary grey). */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -105,7 +116,7 @@ a:hover { color: var(--primary-dark); }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Hero Section */
+/* Hero — the big colourful welcome banner with the headline and buttons. */
 .hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -118,14 +129,14 @@ a:hover { color: var(--primary-dark); }
 .hero p { font-size: 18px; opacity: 0.9; margin-bottom: 32px; }
 .hero-buttons { display: flex; gap: 16px; justify-content: center; }
 
-/* Sections */
+/* Sections — plain white content areas; .section-alt alternates the shade. */
 .section { padding: 80px 24px; }
 .section-alt { background: var(--bg-secondary); }
 .section h2 { text-align: center; font-size: 32px; margin-bottom: 48px; }
 
 .container { max-width: 1200px; margin: 0 auto; }
 
-/* Features Grid */
+/* Features — the "What we offer" cards (Buy / Sell / Track / Support). */
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -145,7 +156,7 @@ a:hover { color: var(--primary-dark); }
 .feature-card h3 { margin-bottom: 8px; }
 .feature-card p { color: var(--text-secondary); font-size: 14px; }
 
-/* Steps Grid */
+/* Steps — the numbered "How it works" cards. */
 .steps-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -173,7 +184,7 @@ a:hover { color: var(--primary-dark); }
 .step-card h3 { margin-bottom: 8px; }
 .step-card p { color: var(--text-secondary); font-size: 14px; }
 
-/* Footer */
+/* Footer — the dark bar at the very bottom of the page. */
 .footer {
     background: var(--bg-dark);
     color: white;
@@ -181,7 +192,7 @@ a:hover { color: var(--primary-dark); }
     padding: 24px;
 }
 
-/* Auth Pages */
+/* Auth pages — login/register: centres a white card on a purple backdrop. */
 .auth-container {
     min-height: 100vh;
     display: flex;
@@ -258,7 +269,7 @@ a:hover { color: var(--primary-dark); }
 
 .auth-footer { text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-secondary); }
 
-/* Toast */
+/* Toast — the small pop-up messages that slide in from the top-right. */
 .toast-container {
     position: fixed;
     top: 20px;
@@ -288,7 +299,7 @@ a:hover { color: var(--primary-dark); }
     to { opacity: 1; transform: translateX(0); }
 }
 
-/* Responsive */
+/* Responsive — rules kick in when the screen is small (phones/tablets). */
 @media (max-width: 768px) {
     .hero h1 { font-size: 32px; }
     .hero-buttons { flex-direction: column; }

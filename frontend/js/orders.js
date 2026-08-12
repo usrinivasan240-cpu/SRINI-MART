@@ -2,6 +2,12 @@
 // File:        orders.js
 // Module:      Phase 4 - Order History & Tracking
 // Purpose:     Buyer order history, status display, and order cancellation.
+//
+// ⭐ WHAT THIS FILE IS (plain English):
+//   The brain of orders.html. It lists the signed-in customer's orders with
+//   their current status, lets them expand an order to see the full address
+//   and price breakdown, and lets them cancel orders that haven't shipped yet.
+//   The list updates live (onSnapshot), so status changes appear instantly.
 // Language:    JavaScript (ES Module)
 // ============================================================================
 
@@ -13,6 +19,7 @@ import { toast, requireAuth, logout, formatMoney, formatDateTime, escapeHtml, em
 
 let session = null;
 
+// Raw status codes → pretty words for the badge.
 const STATUS_LABELS = {
     pending: 'Pending',
     processing: 'Processing',
@@ -21,10 +28,13 @@ const STATUS_LABELS = {
     cancelled: 'Cancelled'
 };
 
+// statusBadge: a small coloured label showing where the order is.
 function statusBadge(status) {
     return `<span class="order-status ${escapeHtml(status)}">${STATUS_LABELS[status] || escapeHtml(status)}</span>`;
 }
 
+// orderCard: builds one order's HTML — id, date, status badge, items, total,
+// and buttons (Cancel if still allowed, View Details).
 function orderCard(order) {
     const canCancel = ['pending', 'processing'].includes(order.orderStatus);
     const items = order.items || [];
@@ -60,6 +70,8 @@ function orderCard(order) {
         </div>`;
 }
 
+// viewOrder: toggles open/closed a "Details" panel showing the delivery
+// address, price breakdown, and payment reference.
 window.viewOrder = function(id) {
     const el = document.getElementById(`order-${id}`);
     const detail = el.querySelector('.order-detail');
@@ -83,6 +95,8 @@ window.viewOrder = function(id) {
     el.appendChild(d);
 };
 
+// cancelOrder: marks an order as cancelled — but only allowed from the UI for
+// "pending" / "processing" orders (see canCancel above).
 window.cancelOrder = async function(id) {
     if (!confirm('Are you sure you want to cancel this order?')) return;
     try {
@@ -96,8 +110,10 @@ window.cancelOrder = async function(id) {
     }
 };
 
-let orders = [];
+let orders = [];   // the currently-displayed orders
 
+// loadOrders: subscribes to the buyer's orders (live). Whenever the status
+// changes anywhere, the list redraws itself.
 async function loadOrders() {
     const listEl = document.getElementById('orderList');
     listEl.innerHTML = '<div class="muted">Loading orders...</div>';
@@ -114,6 +130,7 @@ async function loadOrders() {
     );
 }
 
+// --- Init ------------------------------------------------------------------------
 async function init() {
     session = await requireAuth();
     if (!session) return;
@@ -125,4 +142,5 @@ async function init() {
     await loadOrders();
 }
 
+// Start the page brain.
 init();

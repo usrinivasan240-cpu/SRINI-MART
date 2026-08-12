@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<!-- ============================================================================
+  File:    login.html
+  Purpose: Sign-in and account-creation page (public, no login required).
+  ⭐ WHAT THIS PAGE IS (plain English):
+     The front door of the app. Visitors can either "Login" with their email
+     + password, or "Register" as a Buyer or Seller. Sign-up also creates a
+     user record in the database. SPECIAL RULE: the very first account that is
+     ever created becomes the platform Admin (it gets admin.html access).
+     The logic lives in the <script> at the bottom of this page; it talks to
+     Firebase via ./js/firebase.js and ./js/ui.js.
+  Used by: everyone who isn't signed in yet.
+============================================================================= -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,17 +21,20 @@
 <body>
     <div class="auth-container">
         <div class="auth-card">
+            <!-- Brand + tagline at the top of the card. -->
             <div class="auth-logo">
                 <a href="index.html" class="nav-logo">SriniMart</a>
                 <p>Enterprise Multi-Seller Marketplace</p>
             </div>
 
+            <!-- The two tabs that switch between the Login and Register forms. -->
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showTab('login')">Login</button>
                 <button class="auth-tab" onclick="showTab('register')">Register</button>
             </div>
 
             <!-- Login Form -->
+            <!-- Email + password; submitted to Firebase on "Sign In". -->
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="loginEmail">Email Address</label>
@@ -37,6 +52,8 @@
             </form>
 
             <!-- Register Form -->
+            <!-- Hidden until the "Register" tab is clicked. New accounts pick
+                 Buyer or Seller; the very first account becomes Admin. -->
             <form id="registerForm" style="display:none" onsubmit="handleRegister(event)">
                 <div class="form-row">
                     <div class="form-group">
@@ -70,6 +87,8 @@
                 <button type="submit" class="btn btn-primary" id="registerBtn">Create Account</button>
             </form>
 
+            <!-- The little "Don't have an account? / Already have an account?"
+                 link that switches between the two tabs. -->
             <div class="auth-footer">
                 <p id="authFooterText">Don't have an account? <a href="#" onclick="showTab('register')">Sign up</a></p>
             </div>
@@ -78,13 +97,18 @@
 
     <div class="toast-container"></div>
 
+    <!-- ============================================================================
+         Page brain (inline module script).
+         Uses the shared Firebase + UI helpers instead of a separate .js file.
+    ============================================================================ -->
     <!-- Firebase SDKs -->
     <script type="module">
         import { auth, db, signInWithEmailAndPassword, createUserWithEmailAndPassword,
                  updateProfile, collection, getDocs, doc, setDoc, getDoc, onAuthStateChanged } from "./js/firebase.js";
         import { toast, setLoading } from "./js/ui.js";
 
-        // Tab switching
+        // --- Tab switching -----------------------------------------------------------
+        // showTab('login' | 'register'): shows one form and hides the other.
         window.showTab = function(tab) {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
@@ -106,7 +130,9 @@
             }
         };
 
-        // Login handler
+        // --- Login handler -----------------------------------------------------------
+        // Checks the email + password with Firebase, reads the user's role from
+        // the database, then sends them to their correct homepage.
         window.handleLogin = async function(e) {
             e.preventDefault();
             const btn = document.getElementById('loginBtn');
@@ -119,7 +145,7 @@
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // Get user data from Firestore
+                // Get user data from Firestore (falls back to "buyer" if missing).
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 let userData = { uid: user.uid, email: user.email, role: 'buyer' };
 
@@ -127,7 +153,7 @@
                     userData = { ...userData, ...userDoc.data() };
                 }
 
-                // Get ID token
+                // Get ID token (proof of login, kept in the browser for later use).
                 const idToken = await user.getIdToken();
 
                 // Store in localStorage
@@ -144,6 +170,7 @@
                 }, 500);
 
             } catch (error) {
+                // Turn Firebase's raw error codes into friendly messages.
                 let message = 'Login failed';
                 if (error.code === 'auth/user-not-found') message = 'No account found with this email';
                 else if (error.code === 'auth/wrong-password') message = 'Incorrect password';
@@ -156,7 +183,9 @@
             }
         };
 
-        // Register handler
+        // --- Register handler --------------------------------------------------------
+        // Creates the Firebase login, writes the user's details + chosen role to
+        // the users table, and sends them to their homepage.
         window.handleRegister = async function(e) {
             e.preventDefault();
             const btn = document.getElementById('registerBtn');
@@ -179,7 +208,7 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // Update display name
+                // Update display name (what Firebase shows on the account).
                 await updateProfile(user, { displayName: `${firstName} ${lastName}` });
 
                 // Save user data to Firestore
@@ -218,6 +247,7 @@
                 }, 500);
 
             } catch (error) {
+                // Turn Firebase's raw error codes into friendly messages.
                 let message = 'Registration failed';
                 if (error.code === 'auth/email-already-in-use') message = 'An account with this email already exists';
                 else if (error.code === 'auth/weak-password') message = 'Password must be at least 6 characters';
@@ -229,7 +259,8 @@
             }
         };
 
-        // Check if already logged in
+        // Check if already logged in: if the browser still has a live session,
+        // skip the login page entirely and jump straight to the right homepage.
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 getDoc(doc(db, "users", user.uid)).then(docSnap => {

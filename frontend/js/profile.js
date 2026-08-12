@@ -3,6 +3,12 @@
 // Module:      Phase 2 - User Profile Management
 // Purpose:     View and edit profile details, default address, store info,
 //              and trigger password reset.
+//
+// ⭐ WHAT THIS FILE IS (plain English):
+//   The brain of profile.html. It shows the signed-in user's details, lets
+//   them edit their name, phone and saved address (and store info if they're
+//   a seller), and emails them a password-reset link on request. The saved
+//   address is the same one checkout pre-fills.
 // Language:    JavaScript (ES Module)
 // ============================================================================
 
@@ -11,14 +17,17 @@ import { toast, requireAuth, logout, formatDate, validatePhone, validatePincode 
 
 let session = null;
 
+// populate: copies the user's database record into the page fields.
 async function populate() {
     const p = session.profile;
+    // Left panel: avatar, name, email, role, member-since.
     document.getElementById('profileAvatar').textContent = (p.firstName || p.email || 'U').charAt(0).toUpperCase();
     document.getElementById('profileName').textContent = p.firstName ? `${p.firstName} ${p.lastName || ''}` : p.email;
     document.getElementById('profileEmail').textContent = p.email || '';
     document.getElementById('profileRole').textContent = p.role || 'buyer';
     document.getElementById('memberSince').textContent = p.createdAt ? `Member since ${formatDate(p.createdAt)}` : '';
 
+    // Form fields.
     document.getElementById('pFirstName').value = p.firstName || '';
     document.getElementById('pLastName').value = p.lastName || '';
     document.getElementById('pPhone').value = p.phone || '';
@@ -27,6 +36,7 @@ async function populate() {
     document.getElementById('pState').value = p.address?.state || '';
     document.getElementById('pPincode').value = p.address?.pincode || '';
 
+    // Sellers also get store name / description fields.
     if (p.role === 'seller') {
         document.getElementById('sellerFields').style.display = 'block';
         document.getElementById('pStoreName').value = p.storeName || '';
@@ -34,6 +44,8 @@ async function populate() {
     }
 }
 
+// saveProfile: validates the phone/pincode, then merges the form into the
+// user's record in the database (merge keeps everything else intact).
 async function saveProfile(e) {
     e.preventDefault();
     const phone = document.getElementById('pPhone').value.trim();
@@ -67,6 +79,7 @@ async function saveProfile(e) {
     }
 }
 
+// resetPassword: asks Firebase to email a reset link to the user's address.
 async function resetPassword() {
     if (!session.profile.email) return;
     try {
@@ -77,6 +90,7 @@ async function resetPassword() {
     }
 }
 
+// --- Init ------------------------------------------------------------------------
 async function init() {
     session = await requireAuth();
     if (!session) return;
@@ -90,4 +104,5 @@ async function init() {
     await populate();
 }
 
+// Start the page brain.
 init();

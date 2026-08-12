@@ -1,7 +1,11 @@
 # ============================================================================
 # SriniMart CI/CD
-# On push/PR to main: install deps, run unit tests, then deploy the app
-# (Firebase Hosting, Firestore rules, Storage rules) to the srini-mart project.
+# ⭐ WHAT THIS FILE IS (plain English):
+#     GitHub's automatic helper ("workflow"). Every time new code is pushed to
+#     the "main" branch, GitHub runs this file on its own computers: first it
+#     installs the app's dependencies and runs the unit tests; only if the
+#     tests pass does it deploy the site to Firebase (Hosting pages, Firestore
+#     rules + indexes, Storage rules). If tests fail, nothing is deployed.
 #
 # Setup:
 #   1. firebase login:ci  ->  copy the token
@@ -10,12 +14,14 @@
 
 name: Deploy SriniMart
 
+# When this runs: on every push to "main", or manually from the Actions tab.
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
 jobs:
+  # Job 1: quality gate — make sure the app's logic still passes its tests.
   test:
     name: Run unit tests
     runs-on: ubuntu-latest
@@ -34,6 +40,7 @@ jobs:
         working-directory: frontend
         run: npm test
 
+  # Job 2: deploy — only runs after the test job finishes successfully.
   deploy:
     name: Deploy to Firebase
     needs: test
