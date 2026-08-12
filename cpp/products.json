@@ -1,0 +1,112 @@
+[
+  {
+    "id": "2Pg2g4OreYQulS8E79TG",
+    "name": "Stainless Steel Cookware Set",
+    "categoryName": "Home & Living",
+    "price": 2999.0,
+    "mrp": 5999.0,
+    "rating": 4.7,
+    "ratingCount": 33,
+    "stock": 40,
+    "sellerName": "SriniMart Demo Store"
+  },
+  {
+    "id": "6d99aKIkgVpeQQ8ieoM4",
+    "name": "Wireless Bluetooth Earbuds",
+    "categoryName": "Electronics",
+    "price": 799.0,
+    "mrp": 2499.0,
+    "rating": 4.5,
+    "ratingCount": 128,
+    "stock": 120,
+    "sellerName": "SriniMart Demo Store"
+  },
+  {
+    "id": "CHEnTHTY6SPLOQBWz65X",
+    "name": "Running Shoes",
+    "categoryName": "Fashion",
+    "price": 1499.0,
+    "mrp": 3499.0,
+    "rating": 4.3,
+    "ratingCount": 95,
+    "stock": 60,
+    "sellerName": "SriniMart Demo Store"
+  },
+  {
+    "id": "Z162aGLMcgOCXpSK99Pf",
+    "name": "Bestseller Novel Collection",
+    "categoryName": "Books",
+    "price": 449.0,
+    "mrp": 999.0,
+    "rating": 4.8,
+    "ratingCount": 52,
+    "stock": 75,
+    "sellerName": "SriniMart Demo Store"
+  },
+  {
+    "id": "ZTgJZrvdFgpzZDbwquzq",
+    "name": "Organic Basmati Rice (5kg)",
+    "categoryName": "Groceries",
+    "price": 499.0,
+    "mrp": 799.0,
+    "rating": 4.6,
+    "ratingCount": 58,
+    "stock": 150,
+    "sellerName": "SriniMart Demo Store"
+  },
+  {
+    "id": "cIPoW7wyEeRx9edBJlMe",
+    "name": "Classic Cotton T-Shirt",
+    "categoryName": "Fashion",
+    "price": 399.0,
+    "mrp": 999.0,
+    "rating": 4.0,
+    "ratingCount": 210,
+    "stock": 200,
+    "sellerName": "SriniMart Demo Store"
+  },
+  {
+    "id": "cIqIMXGwKEleJbCiydqv",
+    "name": "Yoga Mat with Carry Strap",
+    "categoryName": "Sports & Fitness",
+    "price": 699.0,
+    "mrp": 1499.0,
+    "rating": 4.5,
+    "ratingCount": 47,
+    "stock": 85,
+    "sellerName": "SriniMart Demo Store"
+  },
+  {
+    "id": "dCA2E7Ft7s8j3PLSgew1",
+    "name": "LED Study Desk Lamp",
+    "categoryName": "Home & Living",
+    "price": 599.0,
+    "mrp": 1499.0,
+    "rating": 4.1,
+    "ratingCount": 67,
+    "stock": 110,
+    "sellerName": "SriniMart Demo Store"
+  },
+  {
+    "id": "ve6KwWDNSR1zWMMBPyYq",
+    "name": "Smart Fitness Band",
+    "categoryName": "Electronics",
+    "price": 1299.0,
+    "mrp": 3999.0,
+    "rating": 4.2,
+    "ratingCount": 76,
+    "stock": 80,
+    "sellerName": "SriniMart Demo Store"
+  },
+  {
+    "id": "yaAkpCqf4hQQcVQgCGYl",
+    "name": "Premium Green Tea (100 bags)",
+    "categoryName": "Groceries",
+    "price": 299.0,
+    "mrp": 599.0,
+    "rating": 4.4,
+    "ratingCount": 41,
+    "stock": 90,
+    "sellerName": "SriniMart Demo Store"
+  }
+]

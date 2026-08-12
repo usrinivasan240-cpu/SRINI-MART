@@ -1,0 +1,412 @@
+[
+  {
+    "name": "Stainless Steel Cookware Set",
+    "productId": "2Pg2g4OreYQulS8E79TG",
+    "recommendations": [
+      {
+        "name": "LED Study Desk Lamp",
+        "price": 599.0,
+        "productId": "dCA2E7Ft7s8j3PLSgew1",
+        "rating": 4.1,
+        "score": 89.40450356629785
+      },
+      {
+        "name": "Running Shoes",
+        "price": 1499.0,
+        "productId": "CHEnTHTY6SPLOQBWz65X",
+        "rating": 4.3,
+        "score": 34.58825167088752
+      },
+      {
+        "name": "Smart Fitness Band",
+        "price": 1299.0,
+        "productId": "ve6KwWDNSR1zWMMBPyYq",
+        "rating": 4.2,
+        "score": 33.36632685313501
+      },
+      {
+        "name": "Wireless Bluetooth Earbuds",
+        "price": 799.0,
+        "productId": "6d99aKIkgVpeQQ8ieoM4",
+        "rating": 4.5,
+        "score": 33.05570313554464
+      },
+      {
+        "name": "Yoga Mat with Carry Strap",
+        "price": 699.0,
+        "productId": "cIqIMXGwKEleJbCiydqv",
+        "rating": 4.5,
+        "score": 32.47500709986154
+      }
+    ]
+  },
+  {
+    "name": "Wireless Bluetooth Earbuds",
+    "productId": "6d99aKIkgVpeQQ8ieoM4",
+    "recommendations": [
+      {
+        "name": "Smart Fitness Band",
+        "price": 1299.0,
+        "productId": "ve6KwWDNSR1zWMMBPyYq",
+        "rating": 4.2,
+        "score": 96.08937628240963
+      },
+      {
+        "name": "Yoga Mat with Carry Strap",
+        "price": 699.0,
+        "productId": "cIqIMXGwKEleJbCiydqv",
+        "rating": 4.5,
+        "score": 39.4193039643169
+      },
+      {
+        "name": "Organic Basmati Rice (5kg)",
+        "price": 499.0,
+        "productId": "ZTgJZrvdFgpzZDbwquzq",
+        "rating": 4.6,
+        "score": 37.35553766309399
+      },
+      {
+        "name": "LED Study Desk Lamp",
+        "price": 599.0,
+        "productId": "dCA2E7Ft7s8j3PLSgew1",
+        "rating": 4.1,
+        "score": 36.3488004307532
+      },
+      {
+        "name": "Running Shoes",
+        "price": 1499.0,
+        "productId": "CHEnTHTY6SPLOQBWz65X",
+        "rating": 4.3,
+        "score": 36.06745146465712
+      }
+    ]
+  },
+  {
+    "name": "Running Shoes",
+    "productId": "CHEnTHTY6SPLOQBWz65X",
+    "recommendations": [
+      {
+        "name": "Classic Cotton T-Shirt",
+        "price": 399.0,
+        "productId": "cIPoW7wyEeRx9edBJlMe",
+        "rating": 4.0,
+        "score": 92.45171262838468
+      },
+      {
+        "name": "Smart Fitness Band",
+        "price": 1299.0,
+        "productId": "ve6KwWDNSR1zWMMBPyYq",
+        "rating": 4.2,
+        "score": 38.778075182247484
+      },
+      {
+        "name": "Wireless Bluetooth Earbuds",
+        "price": 799.0,
+        "productId": "6d99aKIkgVpeQQ8ieoM4",
+        "rating": 4.5,
+        "score": 36.06745146465712
+      },
+      {
+        "name": "Yoga Mat with Carry Strap",
+        "price": 699.0,
+        "productId": "cIqIMXGwKEleJbCiydqv",
+        "rating": 4.5,
+        "score": 35.486755428974014
+      },
+      {
+        "name": "LED Study Desk Lamp",
+        "price": 599.0,
+        "productId": "dCA2E7Ft7s8j3PLSgew1",
+        "rating": 4.1,
+        "score": 34.81625189541032
+      }
+    ]
+  },
+  {
+    "name": "Bestseller Novel Collection",
+    "productId": "Z162aGLMcgOCXpSK99Pf",
+    "recommendations": [
+      {
+        "name": "Organic Basmati Rice (5kg)",
+        "price": 499.0,
+        "productId": "ZTgJZrvdFgpzZDbwquzq",
+        "rating": 4.6,
+        "score": 38.34145795379933
+      },
+      {
+        "name": "Yoga Mat with Carry Strap",
+        "price": 699.0,
+        "productId": "cIqIMXGwKEleJbCiydqv",
+        "rating": 4.5,
+        "score": 36.27769165257642
+      },
+      {
+        "name": "Premium Green Tea (100 bags)",
+        "price": 299.0,
+        "productId": "yaAkpCqf4hQQcVQgCGYl",
+        "rating": 4.4,
+        "score": 35.83424847321106
+      },
+      {
+        "name": "Wireless Bluetooth Earbuds",
+        "price": 799.0,
+        "productId": "6d99aKIkgVpeQQ8ieoM4",
+        "rating": 4.5,
+        "score": 35.69699561689332
+      },
+      {
+        "name": "Classic Cotton T-Shirt",
+        "price": 399.0,
+        "productId": "cIPoW7wyEeRx9edBJlMe",
+        "rating": 4.0,
+        "score": 34.687265546834254
+      }
+    ]
+  },
+  {
+    "name": "Organic Basmati Rice (5kg)",
+    "productId": "ZTgJZrvdFgpzZDbwquzq",
+    "recommendations": [
+      {
+        "name": "Premium Green Tea (100 bags)",
+        "price": 299.0,
+        "productId": "yaAkpCqf4hQQcVQgCGYl",
+        "rating": 4.4,
+        "score": 96.5757064270104
+      },
+      {
+        "name": "Bestseller Novel Collection",
+        "price": 449.0,
+        "productId": "Z162aGLMcgOCXpSK99Pf",
+        "rating": 4.8,
+        "score": 38.34145795379933
+      },
+      {
+        "name": "Yoga Mat with Carry Strap",
+        "price": 699.0,
+        "productId": "cIqIMXGwKEleJbCiydqv",
+        "rating": 4.5,
+        "score": 37.93623369877709
+      },
+      {
+        "name": "Wireless Bluetooth Earbuds",
+        "price": 799.0,
+        "productId": "6d99aKIkgVpeQQ8ieoM4",
+        "rating": 4.5,
+        "score": 37.35553766309399
+      },
+      {
+        "name": "LED Study Desk Lamp",
+        "price": 599.0,
+        "productId": "dCA2E7Ft7s8j3PLSgew1",
+        "rating": 4.1,
+        "score": 36.206737232340785
+      }
+    ]
+  },
+  {
+    "name": "Classic Cotton T-Shirt",
+    "productId": "cIPoW7wyEeRx9edBJlMe",
+    "recommendations": [
+      {
+        "name": "Running Shoes",
+        "price": 1499.0,
+        "productId": "CHEnTHTY6SPLOQBWz65X",
+        "rating": 4.3,
+        "score": 92.4517126283847
+      },
+      {
+        "name": "LED Study Desk Lamp",
+        "price": 599.0,
+        "productId": "dCA2E7Ft7s8j3PLSgew1",
+        "rating": 4.1,
+        "score": 37.63546073297437
+      },
+      {
+        "name": "Premium Green Tea (100 bags)",
+        "price": 299.0,
+        "productId": "yaAkpCqf4hQQcVQgCGYl",
+        "rating": 4.4,
+        "score": 36.34698292637681
+      },
+      {
+        "name": "Organic Basmati Rice (5kg)",
+        "price": 499.0,
+        "productId": "ZTgJZrvdFgpzZDbwquzq",
+        "rating": 4.6,
+        "score": 35.42872350063359
+      },
+      {
+        "name": "Bestseller Novel Collection",
+        "price": 449.0,
+        "productId": "Z162aGLMcgOCXpSK99Pf",
+        "rating": 4.8,
+        "score": 34.687265546834254
+      }
+    ]
+  },
+  {
+    "name": "Yoga Mat with Carry Strap",
+    "productId": "cIqIMXGwKEleJbCiydqv",
+    "recommendations": [
+      {
+        "name": "Wireless Bluetooth Earbuds",
+        "price": 799.0,
+        "productId": "6d99aKIkgVpeQQ8ieoM4",
+        "rating": 4.5,
+        "score": 39.4193039643169
+      },
+      {
+        "name": "Organic Basmati Rice (5kg)",
+        "price": 499.0,
+        "productId": "ZTgJZrvdFgpzZDbwquzq",
+        "rating": 4.6,
+        "score": 37.93623369877709
+      },
+      {
+        "name": "LED Study Desk Lamp",
+        "price": 599.0,
+        "productId": "dCA2E7Ft7s8j3PLSgew1",
+        "rating": 4.1,
+        "score": 36.9294964664363
+      },
+      {
+        "name": "Bestseller Novel Collection",
+        "price": 449.0,
+        "productId": "Z162aGLMcgOCXpSK99Pf",
+        "rating": 4.8,
+        "score": 36.27769165257642
+      },
+      {
+        "name": "Premium Green Tea (100 bags)",
+        "price": 299.0,
+        "productId": "yaAkpCqf4hQQcVQgCGYl",
+        "rating": 4.4,
+        "score": 35.711940125787486
+      }
+    ]
+  },
+  {
+    "name": "LED Study Desk Lamp",
+    "productId": "dCA2E7Ft7s8j3PLSgew1",
+    "recommendations": [
+      {
+        "name": "Stainless Steel Cookware Set",
+        "price": 2999.0,
+        "productId": "2Pg2g4OreYQulS8E79TG",
+        "rating": 4.7,
+        "score": 89.40450356629785
+      },
+      {
+        "name": "Classic Cotton T-Shirt",
+        "price": 399.0,
+        "productId": "cIPoW7wyEeRx9edBJlMe",
+        "rating": 4.0,
+        "score": 37.63546073297437
+      },
+      {
+        "name": "Yoga Mat with Carry Strap",
+        "price": 699.0,
+        "productId": "cIqIMXGwKEleJbCiydqv",
+        "rating": 4.5,
+        "score": 36.9294964664363
+      },
+      {
+        "name": "Wireless Bluetooth Earbuds",
+        "price": 799.0,
+        "productId": "6d99aKIkgVpeQQ8ieoM4",
+        "rating": 4.5,
+        "score": 36.3488004307532
+      },
+      {
+        "name": "Organic Basmati Rice (5kg)",
+        "price": 499.0,
+        "productId": "ZTgJZrvdFgpzZDbwquzq",
+        "rating": 4.6,
+        "score": 36.206737232340785
+      }
+    ]
+  },
+  {
+    "name": "Smart Fitness Band",
+    "productId": "ve6KwWDNSR1zWMMBPyYq",
+    "recommendations": [
+      {
+        "name": "Wireless Bluetooth Earbuds",
+        "price": 799.0,
+        "productId": "6d99aKIkgVpeQQ8ieoM4",
+        "rating": 4.5,
+        "score": 96.08937628240963
+      },
+      {
+        "name": "Running Shoes",
+        "price": 1499.0,
+        "productId": "CHEnTHTY6SPLOQBWz65X",
+        "rating": 4.3,
+        "score": 38.778075182247484
+      },
+      {
+        "name": "LED Study Desk Lamp",
+        "price": 599.0,
+        "productId": "dCA2E7Ft7s8j3PLSgew1",
+        "rating": 4.1,
+        "score": 36.038176713162834
+      },
+      {
+        "name": "Yoga Mat with Carry Strap",
+        "price": 699.0,
+        "productId": "cIqIMXGwKEleJbCiydqv",
+        "rating": 4.5,
+        "score": 35.50868024672654
+      },
+      {
+        "name": "Classic Cotton T-Shirt",
+        "price": 399.0,
+        "productId": "cIPoW7wyEeRx9edBJlMe",
+        "rating": 4.0,
+        "score": 33.6736374461372
+      }
+    ]
+  },
+  {
+    "name": "Premium Green Tea (100 bags)",
+    "productId": "yaAkpCqf4hQQcVQgCGYl",
+    "recommendations": [
+      {
+        "name": "Organic Basmati Rice (5kg)",
+        "price": 499.0,
+        "productId": "ZTgJZrvdFgpzZDbwquzq",
+        "rating": 4.6,
+        "score": 96.5757064270104
+      },
+      {
+        "name": "Classic Cotton T-Shirt",
+        "price": 399.0,
+        "productId": "cIPoW7wyEeRx9edBJlMe",
+        "rating": 4.0,
+        "score": 36.34698292637681
+      },
+      {
+        "name": "Bestseller Novel Collection",
+        "price": 449.0,
+        "productId": "Z162aGLMcgOCXpSK99Pf",
+        "rating": 4.8,
+        "score": 35.83424847321107
+      },
+      {
+        "name": "Yoga Mat with Carry Strap",
+        "price": 699.0,
+        "productId": "cIqIMXGwKEleJbCiydqv",
+        "rating": 4.5,
+        "score": 35.711940125787486
+      },
+      {
+        "name": "LED Study Desk Lamp",
+        "price": 599.0,
+        "productId": "dCA2E7Ft7s8j3PLSgew1",
+        "rating": 4.1,
+        "score": 35.18244365935118
+      }
+    ]
+  }
+]

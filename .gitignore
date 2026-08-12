@@ -1,3 +1,5 @@
 srini-mart-firebase-adminsdk-fbsvc-*.json
 .firebase/
 firebase-debug.log
+cpp/*.exe
+*.lnk

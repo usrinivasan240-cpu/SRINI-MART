@@ -2,13 +2,17 @@
 
 **Status: Phases 1-10 complete (Foundation, Auth, Buyer, Seller, Checkout & Orders, Reviews, Admin, AI Chatbot, Security & Optimization, Testing, Deployment)**
 
+**Live:**
+- Firebase: [srini-mart.web.app](https://srini-mart.web.app)
+- Vercel: [srini-mart.vercel.app](https://srini-mart.vercel.app)
+
 ## Overview
 
 SriniMart is a multi-seller marketplace platform where buyers can shop, sellers can list products, and admins moderate the platform. The app is a **client-side Firebase application** (Authentication + Firestore + Storage) — no custom backend required.
 
 > 📖 **New to the codebase?** Read [`docs/PROJECT_GUIDE.md`](docs/PROJECT_GUIDE.md) — it explains every file and module in plain, non-programmer-friendly language.
 
-> Note: the repository also contains an early plan for an enterprise C++ (Drogon + PostgreSQL) backend (`CMakeLists.txt`, `vcpkg.json`). That backend is **not part of the working application**; the live app runs entirely on Firebase from `frontend/`.
+> Note: the repository also contains an early plan for an enterprise C++ (Drogon + PostgreSQL) backend (`CMakeLists.txt`, `vcpkg.json`). That backend is **not part of the working application**; the live app runs entirely on Firebase from `frontend/`. In addition, `cpp/` holds a small **working C++17 recommendation model** (see [C++ Recommendation Model](#c-recommendation-model)).
 
 ## Features
 
@@ -42,6 +46,18 @@ SriniMart is a multi-seller marketplace platform where buyers can shop, sellers 
 - Client-side rate limiting (8 messages / 60s)
 - Shared pure-logic module (`core.js`) unit-tested with Node's built-in test runner
 
+### C++ Recommendation Model
+- Single self-contained **C++17** program (`cpp/recommender.cpp`) — one process, no server, no internet
+- Content-based scoring: same category (+60), rating similarity (max 30), price similarity (max 10), shared title keywords (max 10)
+- Reads `products.json` (snapshot of the Firestore `products` collection), writes `recommendations.json` (top-N picks per product)
+- **Where it's used:** run it any time the catalogue changes (dev machine, CI, or a scheduled job) to regenerate recommendations; the output can feed the storefront product page ("You may also like") or the chatbot ("what should I buy?")
+- Build & run:
+  ```bash
+  cd cpp
+  build.bat                       # or: g++ -O2 -std=c++17 recommender.cpp -I. -o recommender.exe
+  recommender.exe products.json recommendations.json 5
+  ```
+
 ## Tech Stack
 
 | Component | Technology |
@@ -50,7 +66,8 @@ SriniMart is a multi-seller marketplace platform where buyers can shop, sellers 
 | Authentication | Firebase Authentication |
 | Database | Firebase Firestore |
 | Storage | Firebase Storage (product images) |
-| Hosting | Firebase Hosting (or `node server.cjs`) |
+| Hosting | Firebase Hosting + Vercel (`vercel.json` → `frontend/`) |
+| Recommendations | C++17 model (`cpp/recommender.cpp`) |
 | Testing | Node.js built-in test runner (`node --test`) |
 | CI/CD | GitHub Actions (`.github/workflows/deploy.yml`) |
 
@@ -89,12 +106,19 @@ SriniMart/
 │   │   └── core.test.mjs   # Unit tests (npm test)
 │   ├── server.cjs          # Simple static server (dev, node server.cjs)
 │   └── package.json        # npm scripts (start / test)
+├── cpp/                    # C++17 recommendation model (single process)
+│   ├── recommender.cpp     # The model: content-based "you may also like" engine
+│   ├── json.hpp            # Single-header JSON library (nlohmann/json)
+│   ├── products.json       # Product snapshot (input for the model)
+│   ├── recommendations.json# Model output (top-N suggestions per product)
+│   └── build.bat           # Build script (g++ -O2 -std=c++17)
 ├── .firebaserc             # Default Firebase project
 ├── .github/workflows/deploy.yml  # CI/CD pipeline
 ├── firestore.rules         # Firestore security rules
 ├── firestore.indexes.json  # Required composite indexes
 ├── storage.rules           # Storage security rules
 ├── firebase.json           # Firebase deploy config
+├── vercel.json             # Vercel build config (outputs frontend/)
 ├── docs/
 │   └── PROJECT_GUIDE.md    # Every file & module explained (beginner friendly)
 ├── DEPLOYMENT.md           # Deployment & CI/CD guide
@@ -142,7 +166,9 @@ SriniMart/
    - Seller: `seller.html` — add products (await admin approval), manage inventory, view orders
    - Buyer: `buyer.html` — browse, cart, checkout, orders, reviews
 
-## Deploy to Firebase
+## Deploy
+
+### Firebase
 
 ```bash
 npm install -g firebase-tools
@@ -152,7 +178,13 @@ firebase deploy
 
 The Firestore/Storage rules and indexes deploy with `firebase deploy` (see `firebase.json`). If you deploy only hosting first, apply rules with `firebase deploy --only firestore,storage`.
 
-A GitHub Actions pipeline (`.github/workflows/deploy.yml`) runs the unit tests and deploys on every push to `main` — see `DEPLOYMENT.md` for the one-time `FIREBASE_TOKEN` setup and custom domain / SSL instructions.
+### Vercel
+
+The repo deploys to Vercel automatically from `main` — `vercel.json` tells Vercel to serve the `frontend/` directory. Add `srini-mart.vercel.app` to **Firebase Authentication → Settings → Authorized domains** or sign-in will be blocked on that URL.
+
+### CI/CD
+
+A GitHub Actions pipeline (`.github/workflows/deploy.yml`) runs the unit tests and deploys to Firebase on every push to `main`. One-time setup: create a repo secret **`FIREBASE_SERVICE_ACCOUNT`** containing the full JSON of a Firebase service-account key (Project settings → Service accounts → Generate new private key). The workflow authenticates with `GOOGLE_APPLICATION_CREDENTIALS` — see `DEPLOYMENT.md` for details.
 
 ## Security
 
