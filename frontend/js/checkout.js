@@ -14,7 +14,7 @@
 // ============================================================================
 
 import {
-    db, collection, query, where, getDocs, doc, addDoc, writeBatch,
+    db, collection, query, where, getDocs, doc, addDoc, writeBatch, getDoc,
     serverTimestamp, increment
 } from "./firebase.js";
 import { toast, requireAuth, logout, formatMoney, validatePhone, validatePincode } from "./ui.js";
@@ -132,7 +132,7 @@ async function placeOrder() {
         const orderItems = [];
         for (const item of cart) {
             const prodRef = doc(db, 'products', item.productId);
-            const prodSnap = await batch.get(prodRef);
+            const prodSnap = await getDoc(prodRef);
             if (!prodSnap.exists()) throw new Error(`Product "${item.name}" is no longer available`);
             const stock = prodSnap.data().stock || 0;
             if (stock < item.quantity) throw new Error(`Insufficient stock for "${item.name}"`);
